@@ -1,0 +1,31 @@
+syntax = "proto3";
+package pubsub;
+
+// Registry server messages
+service RegistryServer {
+  // Registers a server and sends the status
+  rpc Register (ServerDetails) returns (StatusOfRegistry) {}
+  // Returns List of servers and their addresses
+  rpc GetServerList (ClientDetails) returns (ServerList) {}
+}
+
+message ClientDetails {
+  string client_uuid = 1;
+}
+
+// Server details containing name and address
+message ServerDetails {
+  string name = 1;
+  string addr = 2;
+}
+
+// Status of Registry 
+message StatusOfRegistry {
+  bool connected = 1;
+}
+
+// List of servers
+message ServerList {
+  // array of server details
+  repeated ServerDetails server_list = 1;
+}

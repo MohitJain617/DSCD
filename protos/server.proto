@@ -1,0 +1,79 @@
+syntax = "proto3";
+package pubsub;
+
+// Server queries
+service Server {
+  // Returns List of servers and their addresses
+  rpc GetServerList (Empty) returns (ServerList) {}
+
+  rpc JoinServer (ClientDetails) returns (StatusOfClientRequest) {}
+  rpc LeaveServer (ClientDetails) returns (StatusOfClientRequest) {}
+  rpc GetArticles (RequestMessage) returns (ArticleList) {}
+  rpc PublishArticle (Article) returns (StatusOfClientRequest) {}
+}
+
+message Empty {
+
+}
+
+message ClientDetails {
+	string client_uuid = 1;
+}
+
+message StatusOfClientRequest {
+	bool request_status = 1;
+}
+
+// Server details containing name and address
+message ServerDetails {
+  string name = 1;
+  string addr = 2;
+}
+
+// List of servers
+message ServerList {
+  // array of server details
+  repeated ServerDetails serverlist = 1;
+}
+
+message Article {
+	oneof ArticleTags {
+		bool SPORTS = 1;
+		bool FASHION = 2;
+		bool POLITICS = 3;
+	}
+	string author = 4;
+
+	// time
+	int32 day = 5;
+	int32 month = 6;
+	int32 year = 7;
+
+	// actual content, word limit 200 characters
+	string content = 8;
+
+	// client details to verify clientelle
+	ClientDetails client = 9;
+}
+
+message RequestMessage {
+	oneof Tags {
+		bool allTags = 1;
+		bool SPORTS = 2;
+		bool FASHION = 3;
+		bool POLITICS = 4;
+	}
+	string author = 5;
+
+	// time
+	int32 day = 6;
+	int32 month = 7;
+	int32 year = 8;
+
+	// client details to verify clientelle
+	ClientDetails client = 9;
+}
+
+message ArticleList {
+	repeated Article articles = 1;
+}
