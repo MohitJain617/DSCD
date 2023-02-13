@@ -3,9 +3,6 @@ package pubsub;
 
 // Server queries
 service Server {
-  // Returns List of servers and their addresses
-  rpc GetServerList (Empty) returns (ServerList) {}
-
   rpc JoinServer (ClientDetails) returns (StatusOfClientRequest) {}
   rpc LeaveServer (ClientDetails) returns (StatusOfClientRequest) {}
   rpc GetArticles (RequestMessage) returns (ArticleList) {}
@@ -72,8 +69,11 @@ message RequestMessage {
 
 	// client details to verify clientelle
 	ClientDetails client = 9;
+	int32 fibof = 10;
 }
 
 message ArticleList {
 	repeated Article articles = 1;
+	bool status = 2;
+	int32 fib = 3;
 }
