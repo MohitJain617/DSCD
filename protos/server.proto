@@ -50,7 +50,7 @@ message Article {
 	string content = 8;
 
 	// client details to verify clientelle
-	ClientDetails client = 9;
+	client_uuid = 9;
 }
 
 message RequestMessage {

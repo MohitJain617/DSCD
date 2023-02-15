@@ -6,6 +6,7 @@ import registryserver_pb2_grpc
 import server_pb2
 import server_pb2_grpc
 from datetime import date
+from datetime import datetime
 
 MAXCLIENTS = 200
 
@@ -15,6 +16,13 @@ def fibonacci(n):
     else:
         return fibonacci(n-1) + fibonacci(n-2)
 
+def is_valid_date(date_str, format_str='%d %m %Y'):
+	try:
+		datetime.strptime(date_str, format_str)
+		return True
+	except ValueError:
+		return False
+    
 class Server(server_pb2_grpc.ServerServicer):
 	def __init__(self, name, ip, port) -> None:
 		super().__init__()
@@ -68,8 +76,8 @@ class Server(server_pb2_grpc.ServerServicer):
 		return True
 
 	def GetArticles(self, request, context):
-		print(f"ARTICLE REQUEST FROM {request.client.client_uuid}")
-		if(request.client.client_uuid not in self.clientelle):
+		print(f"ARTICLE REQUEST FROM {request.client_uuid}")
+		if(request.client_uuid not in self.clientelle):
 			return server_pb2.ArticleList(status=False)
 		matchedArticleList.fib = fibonacci(request.fibof)
 		matchedArticleList = server_pb2.ArticleList(status=True)
