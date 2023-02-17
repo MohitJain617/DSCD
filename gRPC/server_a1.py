@@ -18,6 +18,28 @@ def is_valid_date(date_str, format_str='%d %m %Y'):
 	except ValueError:
 		return False
     
+def articleMatches(request, article):
+	# authors
+	if(request.author != "" and request.author != article.author):
+		return False
+	# date check
+	if(request.year > article.year):
+		return False
+	if(request.year == article.year and request.month > article.month):
+		return False
+	if(request.year == article.year and request.month == article.month and request.day > article.day):
+		return False
+	# check tag
+	if(request.allTags == True):
+		return True 
+	if(request.SPORTS != article.SPORTS):
+		return False
+	if(request.FASHION != article.FASHION):
+		return False
+	if(request.POLITICS != article.POLITICS):
+		return False
+	
+	return True
 class Server(server_pb2_grpc.ServerServicer):
 	def __init__(self, name, ip, port) -> None:
 		super().__init__()
@@ -50,42 +72,20 @@ class Server(server_pb2_grpc.ServerServicer):
 		newlen = len(self.clientelle)
 		return server_pb2.StatusOfClientRequest(request_status= (prevlen > newlen))
 
-	def articleMatches(request, article):
-		# authors
-		if(request.author != "" and request.author != article.author):
-			return False
-		# date check
-		if(request.year > article.year):
-			return False
-		if(request.year == article.year and request.month > article.month):
-			return False
-		if(request.year == article.year and request.month == article.month and request.day > article.day):
-			return False
-		# check tag
-		if(request.allTags == True):
-			return True 
-		if(request.SPORTS != article.SPORTS):
-			return False
-		if(request.FASHION != article.FASHION):
-			return False
-		if(request.POLITICS != article.POLITICS):
-			return False
-		
-		return True
 
 	def GetArticles(self, request, context):
 		print(f"ARTICLE REQUEST FROM {request.client_uuid}")
-		if(request.client_uuid not in self.clientelle or not is_valid_date(f"{request.day} {request.month} {request.year}")):
+		if((request.client_uuid not in self.clientelle) or not (is_valid_date(f"{request.day} {request.month} {request.year}"))):
 			return server_pb2.ArticleList(status=False)
 		matchedArticleList = server_pb2.ArticleList(status=True)
 		for article in self.articles:
-			if(self.articleMatches(request, article)):
+			if(articleMatches(request, article)):
 				matchedArticleList.articles.append(article)
 
 		return matchedArticleList
 	
 	def PublishArticle(self, request, context):
-		print(f"ARTICLES PUBLISH FROM {request.client.client_uuid}")
+		print(f"ARTICLES PUBLISH FROM {request.client_uuid}")
 		request.year = date.today().year
 		request.month = date.today().month
 		request.day = date.today().day

@@ -68,13 +68,9 @@ class Client:
 		reqArticle.month = month
 		reqArticle.year = year
 		
-		try:
-			with grpc.insecure_channel(addr) as channel:
-				stub = server_pb2_grpc.ServerStub(channel)
-				response = stub.GetArticles(reqArticle)
-		except Exception as e:
-			print("Invalid address")
-			return
+		with grpc.insecure_channel(addr) as channel:
+			stub = server_pb2_grpc.ServerStub(channel)
+			response = stub.GetArticles(reqArticle)
 
 		if(response.status == False):
 			print("FAILED")
@@ -88,10 +84,16 @@ class Client:
 				print(article.content)
 				print()
 		
-	def PublishArticles(self):
+	def PublishArticle(self):
 		addr = input("Address of server (ip:port) = ")
 		tag = input("Article tag (sports, fashion, politics): ").lower() 
-		pubArticle = server_pb2.Article(client_uuid=self.id,day=1,month=1,year=1)
+		author = input("Enter author name: ")
+		content = input("Enter content: ")
+		day = int(1)
+		month = int(1)
+		year = int(1)
+
+		pubArticle = server_pb2.Article(author=author,content=content,day=day,month=month,year=year,client_uuid=self.id)
 		if(tag == 'sports'):
 			pubArticle.SPORTS = True
 		elif(tag == 'fashion'):
@@ -101,16 +103,10 @@ class Client:
 		else:
 			print("Invalid Tag")
 			return
-		author = input("Enter author name: ")
-		pubArticle.author = author
-		content = input("Enter content: ")
-		pubArticle.content = content
-
 		with grpc.insecure_channel(addr) as channel:
 			stub = server_pb2_grpc.ServerStub(channel)
 			response = stub.PublishArticle(pubArticle)
-
-		print(response.request_status)
+			print(response.request_status)
 		
 if __name__== '__main__':
 	client = Client()
@@ -130,7 +126,7 @@ if __name__== '__main__':
 		elif(ch == 'a'):
 			client.GetArticles()
 		elif(ch == 'p'):
-			client.PublishArticles()
+			client.PublishArticle()
 		else:
 			print("Invalid input")
 		print("-----------------------------------")

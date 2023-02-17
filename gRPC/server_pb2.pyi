@@ -41,10 +41,6 @@ class ClientDetails(_message.Message):
     client_uuid: str
     def __init__(self, client_uuid: _Optional[str] = ...) -> None: ...
 
-class Empty(_message.Message):
-    __slots__ = []
-    def __init__(self) -> None: ...
-
 class RequestMessage(_message.Message):
     __slots__ = ["FASHION", "POLITICS", "SPORTS", "allTags", "author", "client_uuid", "day", "month", "year"]
     ALLTAGS_FIELD_NUMBER: _ClassVar[int]

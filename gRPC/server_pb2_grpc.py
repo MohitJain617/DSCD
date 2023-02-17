@@ -25,15 +25,15 @@ class ServerStub(object):
                 request_serializer=server__pb2.ClientDetails.SerializeToString,
                 response_deserializer=server__pb2.StatusOfClientRequest.FromString,
                 )
-        self.GetArticles = channel.unary_unary(
-                '/pubsubs.Server/GetArticles',
-                request_serializer=server__pb2.RequestMessage.SerializeToString,
-                response_deserializer=server__pb2.ArticleList.FromString,
-                )
         self.PublishArticle = channel.unary_unary(
                 '/pubsubs.Server/PublishArticle',
                 request_serializer=server__pb2.Article.SerializeToString,
                 response_deserializer=server__pb2.StatusOfClientRequest.FromString,
+                )
+        self.GetArticles = channel.unary_unary(
+                '/pubsubs.Server/GetArticles',
+                request_serializer=server__pb2.RequestMessage.SerializeToString,
+                response_deserializer=server__pb2.ArticleList.FromString,
                 )
 
 
@@ -53,13 +53,13 @@ class ServerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GetArticles(self, request, context):
+    def PublishArticle(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def PublishArticle(self, request, context):
+    def GetArticles(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -78,15 +78,15 @@ def add_ServerServicer_to_server(servicer, server):
                     request_deserializer=server__pb2.ClientDetails.FromString,
                     response_serializer=server__pb2.StatusOfClientRequest.SerializeToString,
             ),
-            'GetArticles': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetArticles,
-                    request_deserializer=server__pb2.RequestMessage.FromString,
-                    response_serializer=server__pb2.ArticleList.SerializeToString,
-            ),
             'PublishArticle': grpc.unary_unary_rpc_method_handler(
                     servicer.PublishArticle,
                     request_deserializer=server__pb2.Article.FromString,
                     response_serializer=server__pb2.StatusOfClientRequest.SerializeToString,
+            ),
+            'GetArticles': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetArticles,
+                    request_deserializer=server__pb2.RequestMessage.FromString,
+                    response_serializer=server__pb2.ArticleList.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -134,23 +134,6 @@ class Server(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def GetArticles(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/pubsubs.Server/GetArticles',
-            server__pb2.RequestMessage.SerializeToString,
-            server__pb2.ArticleList.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
     def PublishArticle(request,
             target,
             options=(),
@@ -164,5 +147,22 @@ class Server(object):
         return grpc.experimental.unary_unary(request, target, '/pubsubs.Server/PublishArticle',
             server__pb2.Article.SerializeToString,
             server__pb2.StatusOfClientRequest.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetArticles(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/pubsubs.Server/GetArticles',
+            server__pb2.RequestMessage.SerializeToString,
+            server__pb2.ArticleList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

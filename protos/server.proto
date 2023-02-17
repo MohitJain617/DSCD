@@ -5,12 +5,8 @@ package pubsubs;
 service Server {
   rpc JoinServer (ClientDetails) returns (StatusOfClientRequest) {}
   rpc LeaveServer (ClientDetails) returns (StatusOfClientRequest) {}
-  rpc GetArticles (RequestMessage) returns (ArticleList) {}
   rpc PublishArticle (Article) returns (StatusOfClientRequest) {}
-}
-
-message Empty {
-
+  rpc GetArticles (RequestMessage) returns (ArticleList) {}
 }
 
 message ClientDetails {
