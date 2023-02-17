@@ -9,12 +9,7 @@ from datetime import date
 from datetime import datetime
 
 MAXCLIENTS = 200
-
-def fibonacci(n):
-    if(n < 3):
-        return 1
-    else:
-        return fibonacci(n-1) + fibonacci(n-2)
+regServerAddr = 'localhost:50051'
 
 def is_valid_date(date_str, format_str='%d %m %Y'):
 	try:
@@ -33,14 +28,17 @@ class Server(server_pb2_grpc.ServerServicer):
 		self.clientelle = []     # list of string of clients uuid
 		self.articles = []       # list server_pb2.Article 
 	
-	def RegisterAsServer(self, stub):
-		response = stub.Register(registryserver_pb2.ServerDetails(name=self.name,addr=f"{self.ip}:{self.port}"))
+	def RegisterAsServer(self):
+		with grpc.insecure_channel(regServerAddr) as channel:
+			stub = registryserver_pb2_grpc.RegistryServerStub(channel)
+			response = stub.Register(registryserver_pb2.ServerDetails(name=self.name,addr=f"{self.ip}:{self.port}"))
 		self.connected = response.connected
 		print(self.connected)
+		return self.connected
 	
 	def JoinServer(self, request, context):
 		print(f"JOIN REQUEST FROM {request.client_uuid}")
-		if(len(self.clientelle) >= MAXCLIENTS):
+		if(len(self.clientelle) >= MAXCLIENTS or request.client_uuid in self.clientelle):
 			return server_pb2.StatusOfClientRequest(request_status=False)
 		self.clientelle.append(request.client_uuid)
 		return server_pb2.StatusOfClientRequest(request_status=True)
@@ -77,9 +75,8 @@ class Server(server_pb2_grpc.ServerServicer):
 
 	def GetArticles(self, request, context):
 		print(f"ARTICLE REQUEST FROM {request.client_uuid}")
-		if(request.client_uuid not in self.clientelle):
+		if(request.client_uuid not in self.clientelle or not is_valid_date(f"{request.day} {request.month} {request.year}")):
 			return server_pb2.ArticleList(status=False)
-		matchedArticleList.fib = fibonacci(request.fibof)
 		matchedArticleList = server_pb2.ArticleList(status=True)
 		for article in self.articles:
 			if(self.articleMatches(request, article)):
@@ -101,3 +98,20 @@ class Server(server_pb2_grpc.ServerServicer):
 	
 		self.articles.append(request)
 		return server_pb2.StatusOfClientRequest(request_status=True)
+
+
+def serve(port, s):
+	server = grpc.server(futures.ThreadPoolExecutor(max_workers=MAXCLIENTS))
+	server_pb2_grpc.add_ServerServicer_to_server(s, server)
+	server.add_insecure_port('[::]:' + port)
+	server.start()
+	print("Server started, listening on " + port)
+	server.wait_for_termination()
+ 
+if __name__ == '__main__':
+	name = input("Enter server name: ")
+	port = input("Enter port: ")
+	s = Server(name, 'localhost', port)
+	if(s.RegisterAsServer()):
+		serve(port, s)
+		

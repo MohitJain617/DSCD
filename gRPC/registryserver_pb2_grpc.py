@@ -16,12 +16,12 @@ class RegistryServerStub(object):
             channel: A grpc.Channel.
         """
         self.Register = channel.unary_unary(
-                '/pubsub.RegistryServer/Register',
+                '/pubsubr.RegistryServer/Register',
                 request_serializer=registryserver__pb2.ServerDetails.SerializeToString,
                 response_deserializer=registryserver__pb2.StatusOfRegistry.FromString,
                 )
         self.GetServerList = channel.unary_unary(
-                '/pubsub.RegistryServer/GetServerList',
+                '/pubsubr.RegistryServer/GetServerList',
                 request_serializer=registryserver__pb2.ClientDetails.SerializeToString,
                 response_deserializer=registryserver__pb2.ServerList.FromString,
                 )
@@ -60,7 +60,7 @@ def add_RegistryServerServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'pubsub.RegistryServer', rpc_method_handlers)
+            'pubsubr.RegistryServer', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -80,7 +80,7 @@ class RegistryServer(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/pubsub.RegistryServer/Register',
+        return grpc.experimental.unary_unary(request, target, '/pubsubr.RegistryServer/Register',
             registryserver__pb2.ServerDetails.SerializeToString,
             registryserver__pb2.StatusOfRegistry.FromString,
             options, channel_credentials,
@@ -97,7 +97,7 @@ class RegistryServer(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/pubsub.RegistryServer/GetServerList',
+        return grpc.experimental.unary_unary(request, target, '/pubsubr.RegistryServer/GetServerList',
             registryserver__pb2.ClientDetails.SerializeToString,
             registryserver__pb2.ServerList.FromString,
             options, channel_credentials,

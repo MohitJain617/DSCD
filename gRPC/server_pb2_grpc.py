@@ -15,28 +15,23 @@ class ServerStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.GetServerList = channel.unary_unary(
-                '/pubsub.Server/GetServerList',
-                request_serializer=server__pb2.Empty.SerializeToString,
-                response_deserializer=server__pb2.ServerList.FromString,
-                )
         self.JoinServer = channel.unary_unary(
-                '/pubsub.Server/JoinServer',
+                '/pubsubs.Server/JoinServer',
                 request_serializer=server__pb2.ClientDetails.SerializeToString,
                 response_deserializer=server__pb2.StatusOfClientRequest.FromString,
                 )
         self.LeaveServer = channel.unary_unary(
-                '/pubsub.Server/LeaveServer',
+                '/pubsubs.Server/LeaveServer',
                 request_serializer=server__pb2.ClientDetails.SerializeToString,
                 response_deserializer=server__pb2.StatusOfClientRequest.FromString,
                 )
         self.GetArticles = channel.unary_unary(
-                '/pubsub.Server/GetArticles',
+                '/pubsubs.Server/GetArticles',
                 request_serializer=server__pb2.RequestMessage.SerializeToString,
                 response_deserializer=server__pb2.ArticleList.FromString,
                 )
         self.PublishArticle = channel.unary_unary(
-                '/pubsub.Server/PublishArticle',
+                '/pubsubs.Server/PublishArticle',
                 request_serializer=server__pb2.Article.SerializeToString,
                 response_deserializer=server__pb2.StatusOfClientRequest.FromString,
                 )
@@ -45,13 +40,6 @@ class ServerStub(object):
 class ServerServicer(object):
     """Server queries
     """
-
-    def GetServerList(self, request, context):
-        """Returns List of servers and their addresses
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
 
     def JoinServer(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -80,11 +68,6 @@ class ServerServicer(object):
 
 def add_ServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetServerList': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetServerList,
-                    request_deserializer=server__pb2.Empty.FromString,
-                    response_serializer=server__pb2.ServerList.SerializeToString,
-            ),
             'JoinServer': grpc.unary_unary_rpc_method_handler(
                     servicer.JoinServer,
                     request_deserializer=server__pb2.ClientDetails.FromString,
@@ -107,7 +90,7 @@ def add_ServerServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'pubsub.Server', rpc_method_handlers)
+            'pubsubs.Server', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -115,23 +98,6 @@ def add_ServerServicer_to_server(servicer, server):
 class Server(object):
     """Server queries
     """
-
-    @staticmethod
-    def GetServerList(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/pubsub.Server/GetServerList',
-            server__pb2.Empty.SerializeToString,
-            server__pb2.ServerList.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def JoinServer(request,
@@ -144,7 +110,7 @@ class Server(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/pubsub.Server/JoinServer',
+        return grpc.experimental.unary_unary(request, target, '/pubsubs.Server/JoinServer',
             server__pb2.ClientDetails.SerializeToString,
             server__pb2.StatusOfClientRequest.FromString,
             options, channel_credentials,
@@ -161,7 +127,7 @@ class Server(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/pubsub.Server/LeaveServer',
+        return grpc.experimental.unary_unary(request, target, '/pubsubs.Server/LeaveServer',
             server__pb2.ClientDetails.SerializeToString,
             server__pb2.StatusOfClientRequest.FromString,
             options, channel_credentials,
@@ -178,7 +144,7 @@ class Server(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/pubsub.Server/GetArticles',
+        return grpc.experimental.unary_unary(request, target, '/pubsubs.Server/GetArticles',
             server__pb2.RequestMessage.SerializeToString,
             server__pb2.ArticleList.FromString,
             options, channel_credentials,
@@ -195,7 +161,7 @@ class Server(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/pubsub.Server/PublishArticle',
+        return grpc.experimental.unary_unary(request, target, '/pubsubs.Server/PublishArticle',
             server__pb2.Article.SerializeToString,
             server__pb2.StatusOfClientRequest.FromString,
             options, channel_credentials,

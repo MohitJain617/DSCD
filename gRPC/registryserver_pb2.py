@@ -13,21 +13,21 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14registryserver.proto\x12\x06pubsub\"$\n\rClientDetails\x12\x13\n\x0b\x63lient_uuid\x18\x01 \x01(\t\"+\n\rServerDetails\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x61\x64\x64r\x18\x02 \x01(\t\"%\n\x10StatusOfRegistry\x12\x11\n\tconnected\x18\x01 \x01(\x08\"8\n\nServerList\x12*\n\x0bserver_list\x18\x01 \x03(\x0b\x32\x15.pubsub.ServerDetails2\x8d\x01\n\x0eRegistryServer\x12=\n\x08Register\x12\x15.pubsub.ServerDetails\x1a\x18.pubsub.StatusOfRegistry\"\x00\x12<\n\rGetServerList\x12\x15.pubsub.ClientDetails\x1a\x12.pubsub.ServerList\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14registryserver.proto\x12\x07pubsubr\"$\n\rClientDetails\x12\x13\n\x0b\x63lient_uuid\x18\x01 \x01(\t\"+\n\rServerDetails\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x61\x64\x64r\x18\x02 \x01(\t\"%\n\x10StatusOfRegistry\x12\x11\n\tconnected\x18\x01 \x01(\x08\"9\n\nServerList\x12+\n\x0bserver_list\x18\x01 \x03(\x0b\x32\x16.pubsubr.ServerDetails2\x91\x01\n\x0eRegistryServer\x12?\n\x08Register\x12\x16.pubsubr.ServerDetails\x1a\x19.pubsubr.StatusOfRegistry\"\x00\x12>\n\rGetServerList\x12\x16.pubsubr.ClientDetails\x1a\x13.pubsubr.ServerList\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'registryserver_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _CLIENTDETAILS._serialized_start=32
-  _CLIENTDETAILS._serialized_end=68
-  _SERVERDETAILS._serialized_start=70
-  _SERVERDETAILS._serialized_end=113
-  _STATUSOFREGISTRY._serialized_start=115
-  _STATUSOFREGISTRY._serialized_end=152
-  _SERVERLIST._serialized_start=154
-  _SERVERLIST._serialized_end=210
-  _REGISTRYSERVER._serialized_start=213
-  _REGISTRYSERVER._serialized_end=354
+  _CLIENTDETAILS._serialized_start=33
+  _CLIENTDETAILS._serialized_end=69
+  _SERVERDETAILS._serialized_start=71
+  _SERVERDETAILS._serialized_end=114
+  _STATUSOFREGISTRY._serialized_start=116
+  _STATUSOFREGISTRY._serialized_end=153
+  _SERVERLIST._serialized_start=155
+  _SERVERLIST._serialized_end=212
+  _REGISTRYSERVER._serialized_start=215
+  _REGISTRYSERVER._serialized_end=360
 # @@protoc_insertion_point(module_scope)
