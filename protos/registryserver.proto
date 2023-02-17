@@ -1,5 +1,5 @@
 syntax = "proto3";
-package pubsub;
+package pubsubr;
 
 // Registry server messages
 service RegistryServer {

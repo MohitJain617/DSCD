@@ -1,5 +1,5 @@
 syntax = "proto3";
-package pubsub;
+package pubsubs;
 
 // Server queries
 service Server {
@@ -50,7 +50,7 @@ message Article {
 	string content = 8;
 
 	// client details to verify clientelle
-	client_uuid = 9;
+	string client_uuid = 9;
 }
 
 message RequestMessage {
@@ -68,12 +68,10 @@ message RequestMessage {
 	int32 year = 8;
 
 	// client details to verify clientelle
-	ClientDetails client = 9;
-	int32 fibof = 10;
+	string client_uuid = 9;
 }
 
 message ArticleList {
 	repeated Article articles = 1;
 	bool status = 2;
-	int32 fib = 3;
 }
