@@ -86,6 +86,8 @@ class Server(server_pb2_grpc.ServerServicer):
 	
 	def PublishArticle(self, request, context):
 		print(f"ARTICLES PUBLISH FROM {request.client_uuid}")
+		if(request.client_uuid not in self.clientelle):
+			return server_pb2.StatusOfClientRequest(request_status=False)
 		request.year = date.today().year
 		request.month = date.today().month
 		request.day = date.today().day
