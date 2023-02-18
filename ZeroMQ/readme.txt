@@ -9,3 +9,13 @@ Implemented a pubsub (like a Discord) Model using ZeroMQ (REQ-REP Sockets) and g
 Explore various functions of client.
 
 - Error handling : Socket timeout : 10s, Valid Addresses, Valid Dates, etc.
+
+
+
+Resources
+----------
+- https://zeromq.org/languages/python/
+- https://github.com/protocolbuffers/protobuf/tree/main/examples
+- https://osdevlab.blogspot.com/2016/03/send-google-protocol-buffer-with-zeromq.html
+- https://github.com/junhyeokahn/zmq-protobuf/tree/master/py-py
+
