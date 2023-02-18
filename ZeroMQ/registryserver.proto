@@ -1,0 +1,29 @@
+syntax = "proto3";
+package pubsubr;
+
+message RegistryServerMessage {
+  oneof Details{
+    ClientDetails clientDetails = 1 ;
+    ServerDetails serverDetails = 2 ;
+  }
+}
+
+message ClientDetails {
+  string client_uuid = 1;
+}
+
+// Server details containing name and address
+message ServerDetails {
+  string name = 1;
+  string addr = 2;
+}
+
+// Status of Registry 
+message StatusOfRegistry {
+  bool connected = 1;
+}
+
+// List of servers
+message ServerList {
+  repeated ServerDetails server_list = 1;
+}
