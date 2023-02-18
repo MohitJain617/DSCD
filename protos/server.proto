@@ -26,7 +26,7 @@ message ServerDetails {
 // List of servers
 message ServerList {
   // array of server details
-  repeated ServerDetails serverlist = 1;
+  repeated ServerDetails server_list = 1;
 }
 
 message Article {
