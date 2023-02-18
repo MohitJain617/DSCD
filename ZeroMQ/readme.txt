@@ -1,5 +1,7 @@
 Implemented a pubsub (like a Discord) Model using ZeroMQ (REQ-REP Sockets) and google protocal buffers.
 
+Running Instructions
+--------------------
 1. Proto file to describe the structure of messages
 2. Generate _pb2.py files (protoc registryserver.proto --python_out='.' & protoc server.proto --python_out='.')
 3. Run registryserver.py (Only once)
