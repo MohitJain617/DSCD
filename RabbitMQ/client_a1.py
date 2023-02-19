@@ -27,7 +27,7 @@ class Client(object):
 		self.corr_id = None
 
 	def processResponse(self, ch, method, props, body):
-		print("HHH")
+		
 		if props.type == "server-list":
 			self.server_list = []
 			result = registryserver_pb2.ServerList()
@@ -37,7 +37,6 @@ class Client(object):
 				self.server_list.append(server)
 				print(f"{server.name} -> {server.addr}")
 
-			print("got it!")
 		elif props.type == "join-server":
 			print(str(body))
 		elif props.type == "leave-server":
@@ -92,7 +91,6 @@ class Client(object):
 		if len(self.server_list) == 0:
 			print("No servers available")
 			return
-		# print("Se")
 		for i in range(len(self.server_list)):
 			print(f"ID: {i}")
 			print(self.server_list[i])
@@ -124,7 +122,6 @@ class Client(object):
 		if len(self.server_list) == 0:
 			print("No servers available")
 			return
-		# print("Se")
 		for i in range(len(self.server_list)):
 			print(f"ID: {i}")
 			print(self.server_list[i])
@@ -156,7 +153,6 @@ class Client(object):
 		if len(self.server_list) == 0:
 			print("No servers available")
 			return
-		# print("Se")
 		for i in range(len(self.server_list)):
 			print(f"ID: {i}")
 			print(self.server_list[i])
@@ -184,12 +180,10 @@ class Client(object):
 		day = int(input("day: "))
 		month = int(input("month: "))
 		year = int(input("year: "))
-		print(day, month, year, author)
 		req_article.day = day
 		req_article.month = month
 		req_article.year = year
 
-		print(req_article)	
 		# Send Request
 
 		message = req_article.SerializeToString()

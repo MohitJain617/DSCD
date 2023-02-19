@@ -13,7 +13,7 @@ def isValidDate(date_str, format_str='%d %m %Y'):
 		datetime.strptime(date_str, format_str)
 		return True
 	except ValueError:
-		print("VAL")
+		# print("VAL")
 		print(date_str)
 		return False
 
@@ -41,7 +41,8 @@ def articleMatches(request, article):
 	return True
 
 class Server(object):
-	def __init__(self) -> None:
+	def __init__(self, name) -> None:
+		self.name = name
 		self.id = str(uuid.uuid4())
 		self.CLIENTELE = []
 		self.articles = []
@@ -76,8 +77,8 @@ class Server(object):
 		if props.type == "register":
 			print(str(body))
 			# print("success!")
-		if props.type == "server-list":
-			print("got it!")
+		# if props.type == "server-list":
+		# 	print("got it!")
 
 	def joinServer(self, body):
 		if len(self.CLIENTELE) >= MAXCLIENTS:
@@ -102,10 +103,11 @@ class Server(object):
 			return str("FAIL")
 
 	def getArticles(self, body):
-		request = server_pb2.Article()
+		# if 
+		request = server_pb2.RequestMessage()
 		request.ParseFromString(body) 
 
-		print(request)
+		# print(request)
 
 		response = server_pb2.ArticleList()
 		if (request.client_uuid not in self.CLIENTELE) or not (isValidDate(f"{request.day} {request.month} {request.year}")):
@@ -116,7 +118,7 @@ class Server(object):
 			response.status = True
 
 			for article in self.articles:
-				if articleMatches(body, article):
+				if articleMatches(request, article):
 					response.articles.append(article)
 
 		return response.SerializeToString()
@@ -140,12 +142,12 @@ class Server(object):
 			return str("FAIL")
 	
 		self.articles.append(request)
-		print(request)
+		# print(request)
 		return str("SUCCESS")
 
 	
 	def handleRpc(self, ch, method, props, body):
-		print("Hello")
+		# print("Hello")
 		if props.type == "join-server":
 			print(f"Join request from {props.correlation_id}")
 			response = self.joinServer(body)
@@ -174,7 +176,7 @@ class Server(object):
 
 	def registerAsServer(self):
 		server_details = server_pb2.ServerDetails()
-		server_details.name = "server a1"
+		server_details.name = self.name
 		server_details.addr = self.id
 		print(server_details)
 		message = server_details.SerializeToString()
@@ -199,4 +201,6 @@ class Server(object):
 		return 0
 
 
-test_server = Server()
+if __name__ == "__main__":
+	name = input("Enter server name: ")
+	server = Server(name)

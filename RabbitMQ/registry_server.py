@@ -47,7 +47,7 @@ class RegistryServer(object):
 
 
 	def handleRpc(self, ch, method, props, body):
-		print("Hello")
+		# print("Hello")
 		if props.type == "register":
 			print("register called")
 			response = self.register(body)
@@ -67,4 +67,5 @@ class RegistryServer(object):
 
 		ch.basic_ack(delivery_tag=method.delivery_tag)
 
-test_server = RegistryServer()
+if __name__ == "__main__":
+	registry_server = RegistryServer() 
