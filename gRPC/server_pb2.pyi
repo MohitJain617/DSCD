@@ -72,10 +72,10 @@ class ServerDetails(_message.Message):
     def __init__(self, name: _Optional[str] = ..., addr: _Optional[str] = ...) -> None: ...
 
 class ServerList(_message.Message):
-    __slots__ = ["serverlist"]
-    SERVERLIST_FIELD_NUMBER: _ClassVar[int]
-    serverlist: _containers.RepeatedCompositeFieldContainer[ServerDetails]
-    def __init__(self, serverlist: _Optional[_Iterable[_Union[ServerDetails, _Mapping]]] = ...) -> None: ...
+    __slots__ = ["server_list"]
+    SERVER_LIST_FIELD_NUMBER: _ClassVar[int]
+    server_list: _containers.RepeatedCompositeFieldContainer[ServerDetails]
+    def __init__(self, server_list: _Optional[_Iterable[_Union[ServerDetails, _Mapping]]] = ...) -> None: ...
 
 class StatusOfClientRequest(_message.Message):
     __slots__ = ["request_status"]

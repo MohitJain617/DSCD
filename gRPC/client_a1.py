@@ -115,7 +115,7 @@ if __name__== '__main__':
 	registryStub = registryserver_pb2_grpc.RegistryServerStub(registryChannel)
 	while(ch != 'q'):
 		print("---------------####----------------")
-		print("Get server list (g) | Join Server (j) | Get Article (a) | Publish (p) | Quit (q):")
+		print("Get server list (g) | Join Server (j) | Leave Server (l) | Get Article (a) | Publish (p) | Quit (q):")
 		ch = input().lower()
 		if(ch == 'q'):
 			break 
@@ -123,6 +123,8 @@ if __name__== '__main__':
 			client.GetServerList(registryStub)
 		elif(ch == 'j'):
 			client.JoinServer()
+		elif(ch == 'l'):
+			client.LeaveServer()
 		elif(ch == 'a'):
 			client.GetArticles()
 		elif(ch == 'p'):
