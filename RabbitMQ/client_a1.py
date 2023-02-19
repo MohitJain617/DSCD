@@ -52,11 +52,11 @@ class Client(object):
 				article_list.ParseFromString(body)
 				for article in article_list.articles:
 					artTag = "SPORTS" if (article.SPORTS) else "FASHION" if (article.FASHION) else "POLITICS"
+					print()
 					print(artTag)
 					print(article.author)
 					print(f"{article.day}/{article.month}/{article.year}")
 					print(article.content)
-					print()
 		
 		elif props.type == "pub-article":
 			print(str(body))

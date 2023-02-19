@@ -78,11 +78,11 @@ class Client:
 			# print articles
 			for article in response.articles:
 				artTag = "SPORTS" if (article.SPORTS) else "FASHION" if (article.FASHION) else "POLITICS"
+				print()
 				print(artTag)
 				print(article.author)
 				print(f"{article.day}/{article.month}/{article.year}")
 				print(article.content)
-				print()
 		
 	def PublishArticle(self):
 		addr = input("Address of server (ip:port) = ")
