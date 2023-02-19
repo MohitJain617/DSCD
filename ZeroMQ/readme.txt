@@ -12,6 +12,8 @@ Explore various functions of client.
 
 - Error handling : Socket timeout : 10s, Valid Addresses, Valid Dates, etc.
 
+Registry Server Address Used : localhost:5555
+
 
 
 Resources
