@@ -18,7 +18,7 @@ class ReplicaDetails(_message.Message):
     def __init__(self, name: _Optional[str] = ..., addr: _Optional[str] = ...) -> None: ...
 
 class ReplicaList(_message.Message):
-    __slots__ = ["server_list"]
-    SERVER_LIST_FIELD_NUMBER: _ClassVar[int]
-    server_list: _containers.RepeatedCompositeFieldContainer[ReplicaDetails]
-    def __init__(self, server_list: _Optional[_Iterable[_Union[ReplicaDetails, _Mapping]]] = ...) -> None: ...
+    __slots__ = ["replica_list"]
+    REPLICA_LIST_FIELD_NUMBER: _ClassVar[int]
+    replica_list: _containers.RepeatedCompositeFieldContainer[ReplicaDetails]
+    def __init__(self, replica_list: _Optional[_Iterable[_Union[ReplicaDetails, _Mapping]]] = ...) -> None: ...
