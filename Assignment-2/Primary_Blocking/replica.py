@@ -7,6 +7,8 @@ import replica_pb2
 import replica_pb2_grpc
 from datetime import date
 from datetime import datetime
+import os
+import uuid
 
 regServerAddr = 'localhost:50051'
 
@@ -19,7 +21,15 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 		self.name = name
 		self.ip = ip
 		self.port = port
+		self.uuid_name =  str(uuid.uuid4())
+		self.filesytem_root = '' # All data of the replica is store here
+		self.createFileSystem()
 	
+	# creates the root files system
+	def createFileSystem(self):
+		self.filesytem_root = "./" + self.name + "_" + self.port + "_" + self.uuid_name
+		os.mkdir(self.filesytem_root)
+
 	def RegisterReplica(self):
 		with grpc.insecure_channel(regServerAddr) as channel:
 			stub = registryserver_pb2_grpc.RegistryServerStub(channel)

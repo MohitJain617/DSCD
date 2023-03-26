@@ -4,6 +4,9 @@ import registryserver_pb2
 import registryserver_pb2_grpc
 import replica_pb2
 import replica_pb2_grpc
+import os
+import shutil
+import subprocess
 
 
 class RegistryServer(registryserver_pb2_grpc.RegistryServerServicer):
@@ -12,17 +15,23 @@ class RegistryServer(registryserver_pb2_grpc.RegistryServerServicer):
 		self.primary_replica = None
 		self.replicalist = []
 		# to connect with the primary stub
-		self.prStub = None
+		self.primary_replica_stub = None
+		self.setupFileSystem()
+
+	def setupFileSystem(self):
+		subprocess.run("./clean_file_system.sh")
+
 
 	def RegisterReplica(self, request, context):
 		print(f"REPLICA live request: {request.name} -> {request.addr}")
 
 		if(self.primary_replica == None):
 			self.primary_replica = request
-			self.prStub = replica_pb2_grpc.ReplicaStub(grpc.insecure_channel(self.primary_replica.addr))
+			self.primary_replica_stub = replica_pb2_grpc.ReplicaStub(grpc.insecure_channel(self.primary_replica.addr))
+			print("Primary Replica Registered!")
 
 		else:
-			response = self.prStub.UpdateReplicaList(replica_pb2.ReplicaDetails(name=request.name,addr=request.addr))
+			response = self.primary_replica_stub.UpdateReplicaList(replica_pb2.ReplicaDetails(name=request.name,addr=request.addr))
 			if(response.status == False):
 				print("Failed to update replica list")
 			else:
@@ -31,6 +40,7 @@ class RegistryServer(registryserver_pb2_grpc.RegistryServerServicer):
 		self.replicalist.append(request)
 
 		# print details of all replicas
+		print("All registered replicas: ")
 		for replica in self.replicalist:
 			print(replica.name + ". " + replica.addr)
 

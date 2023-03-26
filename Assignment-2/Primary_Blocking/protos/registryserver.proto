@@ -4,6 +4,7 @@ package backuprs;
 // Registry server messages
 service RegistryServer {
   // Registers a replica as well as sends the details of primary replica
+  // Registers as primary replica if none exists
   rpc RegisterReplica (ReplicaDetails) returns (ReplicaDetails) {}
   // Returns List of replica's and their addresses
   rpc GetReplicaList (Empty) returns (ReplicaDetails) {}
