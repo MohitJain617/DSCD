@@ -1,0 +1,17 @@
+syntax = "proto3";
+package backupr;
+
+// Server queries
+service Replica {
+	// Registry server will call this RPC for the primary replica
+	rpc UpdateReplicaList(ReplicaDetails) returns (RequestStatus) {}
+}
+
+message ReplicaDetails {
+	string name = 1;
+	string addr = 2;
+}
+
+message RequestStatus {
+	bool status = 1;
+}
