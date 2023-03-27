@@ -7,13 +7,17 @@ service RegistryServer {
   // Registers as primary replica if none exists
   rpc RegisterReplica (ReplicaDetails) returns (ReplicaDetails) {}
   // Returns List of replica's and their addresses
-  rpc GetReplicaList (Empty) returns (ReplicaDetails) {}
+  rpc GetReplicaList (ClientDetails) returns (ReplicaList) {}
   // Returns the primary replica details 
   rpc GetPrimaryReplica (Empty) returns (ReplicaDetails) {}
 }
 
 // Define empty message
 message Empty {}
+
+message ClientDetails {
+  string client_uuid = 1;
+}
 
 // Server details containing name and address
 message ReplicaDetails {

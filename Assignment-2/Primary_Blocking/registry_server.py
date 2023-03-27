@@ -52,10 +52,10 @@ class RegistryServer(registryserver_pb2_grpc.RegistryServerServicer):
 		print()
 		return self.primary_replica
 
-	def GetReplicaList(self, request, context):
+	def GetReplicaList(self, request: registryserver_pb2.ClientDetails, context):
 		print(f"SERVER LIST REQUEST FROM {request.client_uuid}")
 		rlist = registryserver_pb2.ReplicaList()
-		rlist.replica_list.extend(self.replicas)
+		rlist.replica_list.extend(self.replicalist)
 		return rlist
 	
 	

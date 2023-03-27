@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14registryserver.proto\x12\x08\x62\x61\x63kuprs\"\x07\n\x05\x45mpty\",\n\x0eReplicaDetails\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x61\x64\x64r\x18\x02 \x01(\t\"=\n\x0bReplicaList\x12.\n\x0creplica_list\x18\x01 \x03(\x0b\x32\x18.backuprs.ReplicaDetails2\xda\x01\n\x0eRegistryServer\x12G\n\x0fRegisterReplica\x12\x18.backuprs.ReplicaDetails\x1a\x18.backuprs.ReplicaDetails\"\x00\x12=\n\x0eGetReplicaList\x12\x0f.backuprs.Empty\x1a\x18.backuprs.ReplicaDetails\"\x00\x12@\n\x11GetPrimaryReplica\x12\x0f.backuprs.Empty\x1a\x18.backuprs.ReplicaDetails\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14registryserver.proto\x12\x08\x62\x61\x63kuprs\"\x07\n\x05\x45mpty\"$\n\rClientDetails\x12\x13\n\x0b\x63lient_uuid\x18\x01 \x01(\t\",\n\x0eReplicaDetails\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x61\x64\x64r\x18\x02 \x01(\t\"=\n\x0bReplicaList\x12.\n\x0creplica_list\x18\x01 \x03(\x0b\x32\x18.backuprs.ReplicaDetails2\xdf\x01\n\x0eRegistryServer\x12G\n\x0fRegisterReplica\x12\x18.backuprs.ReplicaDetails\x1a\x18.backuprs.ReplicaDetails\"\x00\x12\x42\n\x0eGetReplicaList\x12\x17.backuprs.ClientDetails\x1a\x15.backuprs.ReplicaList\"\x00\x12@\n\x11GetPrimaryReplica\x12\x0f.backuprs.Empty\x1a\x18.backuprs.ReplicaDetails\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'registryserver_pb2', globals())
@@ -22,10 +22,12 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   _EMPTY._serialized_start=34
   _EMPTY._serialized_end=41
-  _REPLICADETAILS._serialized_start=43
-  _REPLICADETAILS._serialized_end=87
-  _REPLICALIST._serialized_start=89
-  _REPLICALIST._serialized_end=150
-  _REGISTRYSERVER._serialized_start=153
-  _REGISTRYSERVER._serialized_end=371
+  _CLIENTDETAILS._serialized_start=43
+  _CLIENTDETAILS._serialized_end=79
+  _REPLICADETAILS._serialized_start=81
+  _REPLICADETAILS._serialized_end=125
+  _REPLICALIST._serialized_start=127
+  _REPLICALIST._serialized_end=188
+  _REGISTRYSERVER._serialized_start=191
+  _REGISTRYSERVER._serialized_end=414
 # @@protoc_insertion_point(module_scope)

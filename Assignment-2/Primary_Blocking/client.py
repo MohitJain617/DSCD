@@ -29,8 +29,8 @@ class Client:
 		# self.pr
 
 	def GetReplicaList(self):
-		response = self.reg_server_stub.GetReplicaList(registryserver_pb2.Empty())
-		self.replica_list = response
+		response = self.reg_server_stub.GetReplicaList(registryserver_pb2.ClientDetails(client_uuid=self.id))
+		self.replica_list = response.replica_list
 		print("\nReplicas: ")
 		for replica in self.replica_list:
 			print(f"name: {replica.name}, addr: {replica.addr}")
@@ -47,7 +47,7 @@ class Client:
 			print("Enter content: ")
 			file_content = input()
 			write_details = replica_pb2.WriteDetails(name=file_name, uuid=file_uuid, content=file_content)
-			self.primary_replica_stub.WriteRequest(write_details)
+			response = self.primary_replica_stub.WriteRequest(write_details)
 		elif ch == 'n':
 			file_uuid = str(uuid.uuid4())
 			print(f"File uuid: {file_uuid}")
@@ -56,9 +56,13 @@ class Client:
 			print("Enter content: ")
 			file_content = input()
 			write_details = replica_pb2.WriteDetails(name=file_name, uuid=file_uuid, content=file_content)
-			self.primary_replica_stub.WriteRequest(write_details)
+			response = self.primary_replica_stub.WriteRequest(write_details)
 		else:
 			print("Invalid Input!")
+			return
+
+		
+		
 
 
 

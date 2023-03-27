@@ -5,6 +5,12 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class ClientDetails(_message.Message):
+    __slots__ = ["client_uuid"]
+    CLIENT_UUID_FIELD_NUMBER: _ClassVar[int]
+    client_uuid: str
+    def __init__(self, client_uuid: _Optional[str] = ...) -> None: ...
+
 class Empty(_message.Message):
     __slots__ = []
     def __init__(self) -> None: ...
