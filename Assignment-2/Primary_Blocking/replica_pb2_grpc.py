@@ -20,6 +20,11 @@ class ReplicaStub(object):
                 request_serializer=replica__pb2.ReplicaDetails.SerializeToString,
                 response_deserializer=replica__pb2.RequestStatus.FromString,
                 )
+        self.WriteRequest = channel.unary_unary(
+                '/backupr.Replica/WriteRequest',
+                request_serializer=replica__pb2.WriteDetails.SerializeToString,
+                response_deserializer=replica__pb2.WriteResponse.FromString,
+                )
 
 
 class ReplicaServicer(object):
@@ -33,6 +38,12 @@ class ReplicaServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def WriteRequest(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ReplicaServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -40,6 +51,11 @@ def add_ReplicaServicer_to_server(servicer, server):
                     servicer.UpdateReplicaList,
                     request_deserializer=replica__pb2.ReplicaDetails.FromString,
                     response_serializer=replica__pb2.RequestStatus.SerializeToString,
+            ),
+            'WriteRequest': grpc.unary_unary_rpc_method_handler(
+                    servicer.WriteRequest,
+                    request_deserializer=replica__pb2.WriteDetails.FromString,
+                    response_serializer=replica__pb2.WriteResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -66,5 +82,22 @@ class Replica(object):
         return grpc.experimental.unary_unary(request, target, '/backupr.Replica/UpdateReplicaList',
             replica__pb2.ReplicaDetails.SerializeToString,
             replica__pb2.RequestStatus.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def WriteRequest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/backupr.Replica/WriteRequest',
+            replica__pb2.WriteDetails.SerializeToString,
+            replica__pb2.WriteResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

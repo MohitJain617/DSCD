@@ -7,12 +7,14 @@ import replica_pb2_grpc
 import os
 import shutil
 import subprocess
+import config
 
 
 class RegistryServer(registryserver_pb2_grpc.RegistryServerServicer):
 	def __init__(self) -> None:
 		super().__init__()
-		self.primary_replica = None
+		self.primary_replica = registryserver_pb2.ReplicaDetails(name="none", addr="none")
+		# self.primary_replica.addr 
 		self.replicalist = []
 		# to connect with the primary stub
 		self.primary_replica_stub = None
@@ -22,15 +24,19 @@ class RegistryServer(registryserver_pb2_grpc.RegistryServerServicer):
 		subprocess.run("./clean_file_system.sh")
 
 
-	def RegisterReplica(self, request, context):
-		print(f"REPLICA live request: {request.name} -> {request.addr}")
+	def GetPrimaryReplica(self, request, context):
+		return self.primary_replica
 
-		if(self.primary_replica == None):
+
+	def RegisterReplica(self, request: registryserver_pb2.ReplicaDetails, context):
+		print(f"REPLICA live request: {request.name} -> {request.addr}")
+		print(self.primary_replica.addr, self.primary_replica.addr == "none")
+		if(self.primary_replica.addr == "none"):
 			self.primary_replica = request
 			self.primary_replica_stub = replica_pb2_grpc.ReplicaStub(grpc.insecure_channel(self.primary_replica.addr))
 			print("Primary Replica Registered!")
-
 		else:
+			print("hello")
 			response = self.primary_replica_stub.UpdateReplicaList(replica_pb2.ReplicaDetails(name=request.name,addr=request.addr))
 			if(response.status == False):
 				print("Failed to update replica list")
@@ -42,8 +48,8 @@ class RegistryServer(registryserver_pb2_grpc.RegistryServerServicer):
 		# print details of all replicas
 		print("All registered replicas: ")
 		for replica in self.replicalist:
-			print(replica.name + ". " + replica.addr)
-
+			print("\t" + replica.name + ". " + replica.addr)
+		print()
 		return self.primary_replica
 
 	def GetReplicaList(self, request, context):
@@ -52,8 +58,9 @@ class RegistryServer(registryserver_pb2_grpc.RegistryServerServicer):
 		rlist.replica_list.extend(self.replicas)
 		return rlist
 	
+	
 def serve():
-	port = '50051'
+	port = config.REG_SERVER_PORT
 	server = grpc.server(futures.ThreadPoolExecutor(max_workers=12))
 	registryserver_pb2_grpc.add_RegistryServerServicer_to_server(RegistryServer(), server)
 	server.add_insecure_port('[::]:' + port)

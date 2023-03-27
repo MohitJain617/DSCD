@@ -1,0 +1,2 @@
+REG_SERVER_ADDR = 'localhost:50051'
+REG_SERVER_PORT = '50051'

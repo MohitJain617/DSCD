@@ -25,6 +25,11 @@ class RegistryServerStub(object):
                 request_serializer=registryserver__pb2.Empty.SerializeToString,
                 response_deserializer=registryserver__pb2.ReplicaDetails.FromString,
                 )
+        self.GetPrimaryReplica = channel.unary_unary(
+                '/backuprs.RegistryServer/GetPrimaryReplica',
+                request_serializer=registryserver__pb2.Empty.SerializeToString,
+                response_deserializer=registryserver__pb2.ReplicaDetails.FromString,
+                )
 
 
 class RegistryServerServicer(object):
@@ -33,6 +38,7 @@ class RegistryServerServicer(object):
 
     def RegisterReplica(self, request, context):
         """Registers a replica as well as sends the details of primary replica
+        Registers as primary replica if none exists
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -40,6 +46,13 @@ class RegistryServerServicer(object):
 
     def GetReplicaList(self, request, context):
         """Returns List of replica's and their addresses
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetPrimaryReplica(self, request, context):
+        """Returns the primary replica details 
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -55,6 +68,11 @@ def add_RegistryServerServicer_to_server(servicer, server):
             ),
             'GetReplicaList': grpc.unary_unary_rpc_method_handler(
                     servicer.GetReplicaList,
+                    request_deserializer=registryserver__pb2.Empty.FromString,
+                    response_serializer=registryserver__pb2.ReplicaDetails.SerializeToString,
+            ),
+            'GetPrimaryReplica': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPrimaryReplica,
                     request_deserializer=registryserver__pb2.Empty.FromString,
                     response_serializer=registryserver__pb2.ReplicaDetails.SerializeToString,
             ),
@@ -98,6 +116,23 @@ class RegistryServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/backuprs.RegistryServer/GetReplicaList',
+            registryserver__pb2.Empty.SerializeToString,
+            registryserver__pb2.ReplicaDetails.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetPrimaryReplica(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/backuprs.RegistryServer/GetPrimaryReplica',
             registryserver__pb2.Empty.SerializeToString,
             registryserver__pb2.ReplicaDetails.FromString,
             options, channel_credentials,

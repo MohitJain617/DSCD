@@ -5,6 +5,8 @@ package backupr;
 service Replica {
 	// Registry server will call this RPC for the primary replica
 	rpc UpdateReplicaList(ReplicaDetails) returns (RequestStatus) {}
+
+	rpc WriteRequest(WriteDetails) returns (WriteResponse) {}
 }
 
 message ReplicaDetails {
@@ -14,4 +16,14 @@ message ReplicaDetails {
 
 message RequestStatus {
 	bool status = 1;
+}
+
+message WriteDetails {
+	string name = 1;
+	string content = 2;
+	string uuid = 3;
+}
+
+message WriteResponse {
+	string status = 1;
 }
