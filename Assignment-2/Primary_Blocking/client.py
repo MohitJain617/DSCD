@@ -60,8 +60,49 @@ class Client:
 		else:
 			print("Invalid Input!")
 			return
+		# print response
+		print(f"Status: {response.status}")
+		print(f"Name: {response.name}")
+		print(f"Content: {response.content}")
+		print(f"Version: {response.version}")
+		print()
+
 
 		
+
+	def ReadRequest(self):
+		print("Replica list: id | name | ip:port")
+		for id, replica in enumerate(self.replica_list):
+			print(str(id) + " | " +  replica.name + " | " + replica.addr) 
+		
+		print("Enter the id of replica you want to query: ")
+		replica_id = input()
+		if replica_id.isnumeric():
+			replica_id = int(replica_id)
+			if replica_id >= 0 and replica_id < len(self.replica_list):
+				print("Enter the uuid of the file you want to request:")
+				file_uuid = input() 
+				with grpc.insecure_channel(self.replica_list[replica_id].addr) as replica_channel:
+					replica_stub = replica_pb2_grpc.ReplicaStub(replica_channel)
+					response = replica_stub.ReadRequest(replica_pb2.ReadDetails(uuid=file_uuid))
+
+				print(f"Status: {response.status}")
+				print(f"Name: {response.name}")
+				print(f"Content: {response.content}")
+				print(f"Version: {response.version}")
+				print()
+			else:
+				print("Invalid replica id!\n")
+				return
+		else:
+		
+			print("Invalid replica id!\n")
+			return
+	
+			
+
+
+
 		
 
 
@@ -74,7 +115,7 @@ if __name__ == '__main__':
 	client = Client(registryStub)
 	while(ch != 'q'):
 		print("---------------####----------------")
-		print("Get replica list (g) | Write (j) | Leave Server (l) | Get Article (a) | Publish (p) | Quit (q):")
+		print("Get replica list (g) | Write (w) | Read (r) | Get Article (a) | Publish (p) | Quit (q):")
 		ch = input().lower()
 		if(ch == 'q'):
 			break 
@@ -82,8 +123,8 @@ if __name__ == '__main__':
 			client.GetReplicaList()
 		elif(ch == 'w'):
 			client.WriteRequest()
-		elif(ch == 'l'):
-			client.LeaveServer()
+		elif(ch == 'r'):
+			client.ReadRequest()
 		elif(ch == 'a'):
 			client.GetArticles()
 		elif(ch == 'p'):

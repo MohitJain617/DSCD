@@ -25,6 +25,11 @@ class ReplicaStub(object):
                 request_serializer=replica__pb2.WriteDetails.SerializeToString,
                 response_deserializer=replica__pb2.WriteResponse.FromString,
                 )
+        self.ReadRequest = channel.unary_unary(
+                '/backupr.Replica/ReadRequest',
+                request_serializer=replica__pb2.ReadDetails.SerializeToString,
+                response_deserializer=replica__pb2.ReadResponse.FromString,
+                )
 
 
 class ReplicaServicer(object):
@@ -44,6 +49,12 @@ class ReplicaServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ReadRequest(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ReplicaServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -56,6 +67,11 @@ def add_ReplicaServicer_to_server(servicer, server):
                     servicer.WriteRequest,
                     request_deserializer=replica__pb2.WriteDetails.FromString,
                     response_serializer=replica__pb2.WriteResponse.SerializeToString,
+            ),
+            'ReadRequest': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReadRequest,
+                    request_deserializer=replica__pb2.ReadDetails.FromString,
+                    response_serializer=replica__pb2.ReadResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -99,5 +115,22 @@ class Replica(object):
         return grpc.experimental.unary_unary(request, target, '/backupr.Replica/WriteRequest',
             replica__pb2.WriteDetails.SerializeToString,
             replica__pb2.WriteResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ReadRequest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/backupr.Replica/ReadRequest',
+            replica__pb2.ReadDetails.SerializeToString,
+            replica__pb2.ReadResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

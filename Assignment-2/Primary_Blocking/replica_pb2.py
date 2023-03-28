@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rreplica.proto\x12\x07\x62\x61\x63kupr\",\n\x0eReplicaDetails\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x61\x64\x64r\x18\x02 \x01(\t\"\x1f\n\rRequestStatus\x12\x0e\n\x06status\x18\x01 \x01(\x08\";\n\x0cWriteDetails\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x0c\n\x04uuid\x18\x03 \x01(\t\"\x1f\n\rWriteResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\x92\x01\n\x07Replica\x12\x46\n\x11UpdateReplicaList\x12\x17.backupr.ReplicaDetails\x1a\x16.backupr.RequestStatus\"\x00\x12?\n\x0cWriteRequest\x12\x15.backupr.WriteDetails\x1a\x16.backupr.WriteResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rreplica.proto\x12\x07\x62\x61\x63kupr\",\n\x0eReplicaDetails\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x61\x64\x64r\x18\x02 \x01(\t\"\x1f\n\rRequestStatus\x12\x0e\n\x06status\x18\x01 \x01(\x08\";\n\x0cWriteDetails\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x0c\n\x04uuid\x18\x03 \x01(\t\"O\n\rWriteResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\x12\x0f\n\x07version\x18\x04 \x01(\t\"\x1b\n\x0bReadDetails\x12\x0c\n\x04uuid\x18\x01 \x01(\t\"N\n\x0cReadResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\x12\x0f\n\x07version\x18\x04 \x01(\t2\xd0\x01\n\x07Replica\x12\x46\n\x11UpdateReplicaList\x12\x17.backupr.ReplicaDetails\x1a\x16.backupr.RequestStatus\"\x00\x12?\n\x0cWriteRequest\x12\x15.backupr.WriteDetails\x1a\x16.backupr.WriteResponse\"\x00\x12<\n\x0bReadRequest\x12\x14.backupr.ReadDetails\x1a\x15.backupr.ReadResponse\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'replica_pb2', globals())
@@ -27,7 +27,11 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _WRITEDETAILS._serialized_start=105
   _WRITEDETAILS._serialized_end=164
   _WRITERESPONSE._serialized_start=166
-  _WRITERESPONSE._serialized_end=197
-  _REPLICA._serialized_start=200
-  _REPLICA._serialized_end=346
+  _WRITERESPONSE._serialized_end=245
+  _READDETAILS._serialized_start=247
+  _READDETAILS._serialized_end=274
+  _READRESPONSE._serialized_start=276
+  _READRESPONSE._serialized_end=354
+  _REPLICA._serialized_start=357
+  _REPLICA._serialized_end=565
 # @@protoc_insertion_point(module_scope)

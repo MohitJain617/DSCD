@@ -10,6 +10,7 @@ from datetime import datetime
 import os
 import uuid
 import config
+import pathlib
 
 regServerAddr = config.REG_SERVER_ADDR
 
@@ -53,7 +54,7 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 	def UpdateReplicaList(self, request : replica_pb2.ReplicaDetails, context):
 		self.replicaList.append(request)
 		for repl in self.replicaList:
-			print(repl.name + ". " + repl.addr)
+			print(repl.name + " | " + repl.addr)
 		return replica_pb2.RequestStatus(status=True)
 	
 	def canWrite(self, request):
@@ -80,7 +81,7 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 		return can_write, status
 
 	# Handles write request 
-	def WriteRequest(self, request: replica_pb2.WriteDetails, context):
+	def WriteRequest(self, request: replica_pb2.WriteDetails, context) -> replica_pb2.WriteResponse:
 		can_write, status = True, "SUCCESS"
 		if self.is_primary == True:
 			# Write and send write reqs to other replcas 
@@ -95,6 +96,10 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 				f.write(request.content)
 				f.close()
 
+				file_version = pathlib.Path(self.filesytem_root + "/" + request.name).stat().st_mtime
+				file_version = datetime.fromtimestamp(file_version)
+
+
 				for replica in self.replicaList:
 					# replica_addr = replica.ad
 					try:
@@ -104,11 +109,12 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 							if(response.status  != "SUCCESS"):
 								print("Write propogation failed!")
 								status = "WRITE PROP FAILED"
-								return replica_pb2.WriteResponse(status=status)
+								return replica_pb2.WriteResponse(status=status, name=request.name, content=request.content, version=file_version)
 						
 
 					except Exception as e:
 						print(f"Couldn't Connect With Replica {replica.addr}!")
+						print(e)
 						# return
 
 
@@ -119,9 +125,37 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 			f = open(self.filesytem_root + "/" + request.name, "w")
 			f.write(request.content)
 			f.close()
-			return replica_pb2.WriteResponse(status="SUCCESS")
+			file_version = pathlib.Path(self.filesytem_root + "/" + request.name).stat().st_mtime
+			file_version = datetime.fromtimestamp(file_version)
+			return replica_pb2.WriteResponse(status="SUCCESS", name=request.name, content=request.content, version=file_version)
 
-		return replica_pb2.WriteResponse(status=status)
+		return replica_pb2.WriteResponse(status=status, name=request.name, content=request.content, version=file_version)
+
+	def ReadRequest(self, request: replica_pb2.ReadDetails, context) -> replica_pb2.ReadResponse:
+		if request.uuid in self.uuid_to_file:
+			file_path = self.filesytem_root + '/' + self.uuid_to_file[request.uuid]
+			# in memory map 
+			if os.path.exists(file_path):
+				# file not deleted 
+				file_name = self.uuid_to_file[request.uuid]
+				with open(file_path, "r") as f:
+					file_content = f.read()
+				file_version = pathlib.Path(file_path).stat().st_mtime
+				file_version = datetime.fromtimestamp(file_version)
+
+				return replica_pb2.ReadResponse(status="SUCCESS", name=None, content=file_content, version=file_version)
+			else: 
+				# file deleted! 
+				status = "FILE ALREADY DELETED"
+				return replica_pb2.ReadResponse(status=status)
+		else:
+			# file doesn't exist 
+			status = "FILE DOES NOT EXIST"
+			return replica_pb2.ReadResponse(status=status)
+		
+			
+
+				
 
 
 
