@@ -87,7 +87,7 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 			# Write and send write reqs to other replcas 
 			can_write, status = self.canWrite(request)
 			if can_write == False:
-				return replica_pb2.WriteResponse(status=status)
+				return replica_pb2.WriteResponse(status=status, name=request.name, content=request.content, version="")
 			else:
 				self.filename_to_uuid[request.name] = request.uuid
 				self.uuid_to_file[request.uuid] = request.name
@@ -97,7 +97,7 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 				f.close()
 
 				file_version = pathlib.Path(self.filesytem_root + "/" + request.name).stat().st_mtime
-				file_version = datetime.fromtimestamp(file_version)
+				file_version = str(datetime.fromtimestamp(file_version))
 
 
 				for replica in self.replicaList:
@@ -126,7 +126,7 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 			f.write(request.content)
 			f.close()
 			file_version = pathlib.Path(self.filesytem_root + "/" + request.name).stat().st_mtime
-			file_version = datetime.fromtimestamp(file_version)
+			file_version = str(datetime.fromtimestamp(file_version))
 			return replica_pb2.WriteResponse(status="SUCCESS", name=request.name, content=request.content, version=file_version)
 
 		return replica_pb2.WriteResponse(status=status, name=request.name, content=request.content, version=file_version)
