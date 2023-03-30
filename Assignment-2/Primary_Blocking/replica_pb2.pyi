@@ -37,14 +37,16 @@ class RequestStatus(_message.Message):
     def __init__(self, status: bool = ...) -> None: ...
 
 class WriteDetails(_message.Message):
-    __slots__ = ["content", "name", "uuid"]
+    __slots__ = ["content", "name", "uuid", "version"]
     CONTENT_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     UUID_FIELD_NUMBER: _ClassVar[int]
+    VERSION_FIELD_NUMBER: _ClassVar[int]
     content: str
     name: str
     uuid: str
-    def __init__(self, name: _Optional[str] = ..., content: _Optional[str] = ..., uuid: _Optional[str] = ...) -> None: ...
+    version: str
+    def __init__(self, name: _Optional[str] = ..., content: _Optional[str] = ..., uuid: _Optional[str] = ..., version: _Optional[str] = ...) -> None: ...
 
 class WriteResponse(_message.Message):
     __slots__ = ["content", "name", "status", "version"]

@@ -24,6 +24,7 @@ message WriteDetails {
 	string name = 1;
 	string content = 2;
 	string uuid = 3;
+	string version = 4;
 }
 
 message WriteResponse {

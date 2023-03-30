@@ -29,6 +29,7 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 		self.is_primary = False
 		self.filename_to_uuid = {} # if unset then filename free to use 
 		self.uuid_to_file = {}
+		self.uuid_to_version = {}
 	
 	# creates the root files system
 	def createFileSystem(self):
@@ -98,7 +99,8 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 
 				file_version = pathlib.Path(self.filesytem_root + "/" + request.name).stat().st_mtime
 				file_version = str(datetime.fromtimestamp(file_version))
-
+				self.uuid_to_version[request.uuid] = file_version
+				request.version = file_version
 
 				for replica in self.replicaList:
 					# replica_addr = replica.ad
@@ -125,8 +127,8 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 			f = open(self.filesytem_root + "/" + request.name, "w")
 			f.write(request.content)
 			f.close()
-			file_version = pathlib.Path(self.filesytem_root + "/" + request.name).stat().st_mtime
-			file_version = str(datetime.fromtimestamp(file_version))
+			self.uuid_to_version[request.uuid] = request.version
+			file_version = request.version
 			return replica_pb2.WriteResponse(status="SUCCESS", name=request.name, content=request.content, version=file_version)
 
 		return replica_pb2.WriteResponse(status=status, name=request.name, content=request.content, version=file_version)
@@ -140,8 +142,7 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 				file_name = self.uuid_to_file[request.uuid]
 				with open(file_path, "r") as f:
 					file_content = f.read()
-				file_version = pathlib.Path(file_path).stat().st_mtime
-				file_version = str(datetime.fromtimestamp(file_version))
+				file_version = self.uuid_to_version[request.uuid]
 
 				return replica_pb2.ReadResponse(status="SUCCESS", name=file_name, content=file_content, version=file_version)
 			else: 

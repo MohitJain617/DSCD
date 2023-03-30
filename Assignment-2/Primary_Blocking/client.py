@@ -46,7 +46,7 @@ class Client:
 			file_name = input()
 			print("Enter content: ")
 			file_content = input()
-			write_details = replica_pb2.WriteDetails(name=file_name, uuid=file_uuid, content=file_content)
+			write_details = replica_pb2.WriteDetails(name=file_name, uuid=file_uuid, content=file_content, version="")
 			response = self.primary_replica_stub.WriteRequest(write_details)
 		elif ch == 'n':
 			file_uuid = str(uuid.uuid4())
@@ -55,7 +55,7 @@ class Client:
 			file_name = input()
 			print("Enter content: ")
 			file_content = input()
-			write_details = replica_pb2.WriteDetails(name=file_name, uuid=file_uuid, content=file_content)
+			write_details = replica_pb2.WriteDetails(name=file_name, uuid=file_uuid, content=file_content, version="")
 			response = self.primary_replica_stub.WriteRequest(write_details)
 		else:
 			print("Invalid Input!")
