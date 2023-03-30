@@ -11,6 +11,7 @@ import os
 import uuid
 import config
 import pathlib
+import time
 
 regServerAddr = config.REG_SERVER_ADDR
 
@@ -63,7 +64,7 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 		status = "SUCCESS"
 
 		if request.uuid in self.uuid_to_file:
-			if os.path.exists(self.filesytem_root + "/" + self.uuid_to_file[request.uuid]):
+			if self.uuid_to_file[request.uuid] != "" and os.path.exists(self.filesytem_root + "/" + self.uuid_to_file[request.uuid]):
 				# update 
 				can_write = True
 				status = "SUCCESS" 
@@ -153,6 +154,58 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 			# file doesn't exist 
 			status = "FILE DOES NOT EXIST"
 			return replica_pb2.ReadResponse(status=status, name="", content="", version="")
+
+
+	# Handles delete request 
+	def DeleteRequest(self, request: replica_pb2.DeleteDetails, context) -> replica_pb2.DeleteResponse:
+		can_write, status = True, "SUCCESS"
+		
+		if request.uuid not in self.uuid_to_file:
+			return replica_pb2.DeleteResponse(status="Invalid UUID!")
+		
+		if self.uuid_to_file[request.uuid] == "":
+			return replica_pb2.DeleteResponse(status="File already deleted!")
+
+		if self.is_primary == True:
+			# Delete and send delete reqs to other replcas 
+
+			os.remove(self.filesytem_root + "/" + self.uuid_to_file[request.uuid])
+			self.uuid_to_file[request.uuid] = ""
+			new_version = str(datetime.fromtimestamp(time.time()))
+			self.uuid_to_version[request.uuid] = new_version
+
+			request.version = new_version
+
+			for replica in self.replicaList:
+				# replica_addr = replica.ad
+				try:
+					with grpc.insecure_channel(replica.addr) as channel:
+						replica_stub = replica_pb2_grpc.ReplicaStub(channel)
+						response = replica_stub.DeleteRequest(request)
+						if(response.status  != "SUCCESS"):
+							print("Delete propogation failed!")
+							status = "DELETE PROP FAILED"
+							return replica_pb2.DeleteResponse(status=status)
+					
+
+				except Exception as e:
+					print(f"Couldn't Connect With Replica {replica.addr}!")
+					print(e)
+					# return
+
+
+				
+		else: 
+
+			os.remove(self.filesytem_root + "/" + self.uuid_to_file[request.uuid])
+			self.uuid_to_file[request.uuid] = ""
+			new_version = request.version
+			self.uuid_to_version[request.uuid] = new_version
+
+			return replica_pb2.DeleteResponse(status="SUCCESS")
+
+		return replica_pb2.DeleteResponse(status=status)
+
 		
 			
 

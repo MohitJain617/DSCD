@@ -9,6 +9,8 @@ service Replica {
 	rpc WriteRequest(WriteDetails) returns (WriteResponse) {}
 
 	rpc ReadRequest(ReadDetails) returns (ReadResponse) {}
+
+	rpc DeleteRequest(DeleteDetails) returns (DeleteResponse) {}
 }
 
 message ReplicaDetails {
@@ -43,4 +45,13 @@ message ReadResponse {
 	string name = 2;
 	string content = 3;
 	string version = 4;
+}
+
+message DeleteDetails {
+	string uuid = 1;
+	string version = 2;
+}
+
+message DeleteResponse {
+	string status = 1;
 }

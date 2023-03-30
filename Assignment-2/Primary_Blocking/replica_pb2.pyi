@@ -4,6 +4,20 @@ from typing import ClassVar as _ClassVar, Optional as _Optional
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class DeleteDetails(_message.Message):
+    __slots__ = ["uuid", "version"]
+    UUID_FIELD_NUMBER: _ClassVar[int]
+    VERSION_FIELD_NUMBER: _ClassVar[int]
+    uuid: str
+    version: str
+    def __init__(self, uuid: _Optional[str] = ..., version: _Optional[str] = ...) -> None: ...
+
+class DeleteResponse(_message.Message):
+    __slots__ = ["status"]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    status: str
+    def __init__(self, status: _Optional[str] = ...) -> None: ...
+
 class ReadDetails(_message.Message):
     __slots__ = ["uuid"]
     UUID_FIELD_NUMBER: _ClassVar[int]

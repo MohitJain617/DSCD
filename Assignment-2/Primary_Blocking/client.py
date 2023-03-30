@@ -99,9 +99,19 @@ class Client:
 			print("Invalid replica id!\n")
 			return
 	
+	def DeleteRequest(self):
+
+		print("Enter the uuid of the file you want to request:")
+		file_uuid = input() 
+
+		response = self.primary_replica_stub.DeleteRequest(replica_pb2.DeleteDetails(uuid=file_uuid, version=""))
+
+		print(f"Status: {response.status}")
+		# print(f"Name: {response.name}")
+		# print(f"Content: {response.content}")
+		# print(f"Version: {response.version}")
+		print()
 			
-
-
 
 		
 
@@ -115,7 +125,7 @@ if __name__ == '__main__':
 	client = Client(registryStub)
 	while(ch != 'q'):
 		print("---------------####----------------")
-		print("Get replica list (g) | Write (w) | Read (r) | Get Article (a) | Publish (p) | Quit (q):")
+		print("Get replica list (g) | Write (w) | Read (r) | Delete (d) | Quit (q):")
 		ch = input().lower()
 		if(ch == 'q'):
 			break 
@@ -125,10 +135,8 @@ if __name__ == '__main__':
 			client.WriteRequest()
 		elif(ch == 'r'):
 			client.ReadRequest()
-		elif(ch == 'a'):
-			client.GetArticles()
-		elif(ch == 'p'):
-			client.PublishArticle()
+		elif(ch == 'd'):
+			client.DeleteRequest()
 		else:
 			print("Invalid input")
 		print("-----------------------------------")

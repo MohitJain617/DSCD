@@ -30,6 +30,11 @@ class ReplicaStub(object):
                 request_serializer=replica__pb2.ReadDetails.SerializeToString,
                 response_deserializer=replica__pb2.ReadResponse.FromString,
                 )
+        self.DeleteRequest = channel.unary_unary(
+                '/backupr.Replica/DeleteRequest',
+                request_serializer=replica__pb2.DeleteDetails.SerializeToString,
+                response_deserializer=replica__pb2.DeleteResponse.FromString,
+                )
 
 
 class ReplicaServicer(object):
@@ -55,6 +60,12 @@ class ReplicaServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DeleteRequest(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ReplicaServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -72,6 +83,11 @@ def add_ReplicaServicer_to_server(servicer, server):
                     servicer.ReadRequest,
                     request_deserializer=replica__pb2.ReadDetails.FromString,
                     response_serializer=replica__pb2.ReadResponse.SerializeToString,
+            ),
+            'DeleteRequest': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteRequest,
+                    request_deserializer=replica__pb2.DeleteDetails.FromString,
+                    response_serializer=replica__pb2.DeleteResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -132,5 +148,22 @@ class Replica(object):
         return grpc.experimental.unary_unary(request, target, '/backupr.Replica/ReadRequest',
             replica__pb2.ReadDetails.SerializeToString,
             replica__pb2.ReadResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DeleteRequest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/backupr.Replica/DeleteRequest',
+            replica__pb2.DeleteDetails.SerializeToString,
+            replica__pb2.DeleteResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
