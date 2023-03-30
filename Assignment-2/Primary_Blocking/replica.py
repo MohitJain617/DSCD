@@ -141,17 +141,17 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 				with open(file_path, "r") as f:
 					file_content = f.read()
 				file_version = pathlib.Path(file_path).stat().st_mtime
-				file_version = datetime.fromtimestamp(file_version)
+				file_version = str(datetime.fromtimestamp(file_version))
 
-				return replica_pb2.ReadResponse(status="SUCCESS", name=None, content=file_content, version=file_version)
+				return replica_pb2.ReadResponse(status="SUCCESS", name=file_name, content=file_content, version=file_version)
 			else: 
 				# file deleted! 
 				status = "FILE ALREADY DELETED"
-				return replica_pb2.ReadResponse(status=status)
+				return replica_pb2.ReadResponse(status=status, name="", content="", version="")
 		else:
 			# file doesn't exist 
 			status = "FILE DOES NOT EXIST"
-			return replica_pb2.ReadResponse(status=status)
+			return replica_pb2.ReadResponse(status=status, name="", content="", version="")
 		
 			
 
