@@ -98,7 +98,7 @@ if __name__ == '__main__':
 	Nr = int(input("Enter number of read replicas: "))
 
 	# condition for quorum should be satisfied:
-	if(Nw + Nr < N or Nw < N/2):
+	if(Nw + Nr <= N or Nw < N/2):
 		print("Quorum condition not satisfied!")
 		exit()
 
