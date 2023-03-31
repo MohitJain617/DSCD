@@ -38,35 +38,51 @@ class Client:
 		print()
 	
 	def WriteRequest(self): 
-		print("Update Existing File (u) | New File (n)")
-		ch = input().lower()
-		if ch == 'u':
-			print("Enter file uuid: ")
-			file_uuid = input()
-			print("Enter file name: ")
-			file_name = input()
-			print("Enter content: ")
-			file_content = input()
-			write_details = replica_pb2.WriteDetails(name=file_name, uuid=file_uuid, content=file_content, version="")
-			response = self.primary_replica_stub.WriteRequest(write_details)
-		elif ch == 'n':
-			file_uuid = str(uuid.uuid4())
-			print(f"File uuid: {file_uuid}")
-			print("Enter file name: ")
-			file_name = input()
-			print("Enter content: ")
-			file_content = input()
-			write_details = replica_pb2.WriteDetails(name=file_name, uuid=file_uuid, content=file_content, version="")
-			response = self.primary_replica_stub.WriteRequest(write_details)
-		else:
-			print("Invalid Input!")
+		print("Replica list: id | name | ip:port")
+		for id, replica in enumerate(self.replica_list):
+			print(str(id) + " | " +  replica.name + " | " + replica.addr) 
+		
+		print("Enter the id of replica you want to query: ")
+		replica_id = input()
+
+		if replica_id.isnumeric() == False or (int(replica_id) < 0 or int(replica_id) >= len(self.replica_list)):
+			print("Invalid Replica ID!")
 			return
-		# print response
-		print(f"Status: {response.status}")
-		print(f"Name: {response.name}")
-		print(f"Content: {response.content}")
-		print(f"Version: {response.version}")
-		print()
+
+		replica_id = int(replica_id)
+
+		with grpc.insecure_channel(self.replica_list[replica_id].addr) as channel:
+			rep_stub = replica_pb2_grpc.ReplicaStub(channel)
+
+			print("Update Existing File (u) | New File (n)")
+			ch = input().lower()
+			if ch == 'u':
+				print("Enter file uuid: ")
+				file_uuid = input()
+				print("Enter file name: ")
+				file_name = input()
+				print("Enter content: ")
+				file_content = input()
+				write_details = replica_pb2.WriteDetails(name=file_name, uuid=file_uuid, content=file_content, version="", primary_hop=False)
+				response = rep_stub.WriteRequest(write_details)
+			elif ch == 'n':
+				file_uuid = str(uuid.uuid4())
+				print(f"File uuid: {file_uuid}")
+				print("Enter file name: ")
+				file_name = input()
+				print("Enter content: ")
+				file_content = input()
+				write_details = replica_pb2.WriteDetails(name=file_name, uuid=file_uuid, content=file_content, version="", primary_hop=False)
+				response = rep_stub.WriteRequest(write_details)
+			else:
+				print("Invalid Input!")
+				return
+			# print response
+			print(f"\nStatus: {response.status}")
+			print(f"Name: {response.name}")
+			print(f"Content: {response.content}")
+			print(f"Version: {response.version}")
+			print()
 
 
 		
@@ -87,32 +103,47 @@ class Client:
 					replica_stub = replica_pb2_grpc.ReplicaStub(replica_channel)
 					response = replica_stub.ReadRequest(replica_pb2.ReadDetails(uuid=file_uuid))
 
-				print(f"Status: {response.status}")
+				print(f"\nStatus: {response.status}")
 				print(f"Name: {response.name}")
 				print(f"Content: {response.content}")
 				print(f"Version: {response.version}")
 				print()
 			else:
-				print("Invalid replica id!\n")
+				print("\nInvalid replica id!\n")
 				return
 		else:
 		
-			print("Invalid replica id!\n")
+			print("\nInvalid replica id!\n")
 			return
 	
 	def DeleteRequest(self):
+		print("Replica list: id | name | ip:port")
+		for id, replica in enumerate(self.replica_list):
+			print(str(id) + " | " +  replica.name + " | " + replica.addr) 
+		
+		print("Enter the id of replica you want to query: ")
+		replica_id = input()
 
-		print("Enter the uuid of the file you want to request:")
-		file_uuid = input() 
+		if replica_id.isnumeric() == False or (int(replica_id) < 0 or int(replica_id) >= len(self.replica_list)):
+			print("Invalid Replica ID!")
+			return
 
-		version = str(datetime.fromtimestamp(time.time()))
-		response = self.primary_replica_stub.DeleteRequest(replica_pb2.DeleteDetails(uuid=file_uuid, version=version))
+		replica_id = int(replica_id)
 
-		print(f"Status: {response.status}")
-		# print(f"Name: {response.name}")
-		# print(f"Content: {response.content}")
-		# print(f"Version: {response.version}")
-		print()
+		with grpc.insecure_channel(self.replica_list[replica_id].addr) as channel:
+			rep_stub = replica_pb2_grpc.ReplicaStub(channel)
+
+			print("Enter the uuid of the file you want to request:")
+			file_uuid = input() 
+
+			version = str(datetime.fromtimestamp(time.time()))
+			response = rep_stub.DeleteRequest(replica_pb2.DeleteDetails(uuid=file_uuid, version=version, primary_hop=False))
+
+			print(f"\nStatus: {response.status}")
+			# print(f"Name: {response.name}")
+			# print(f"Content: {response.content}")
+			# print(f"Version: {response.version}")
+			print()
 			
 
 		

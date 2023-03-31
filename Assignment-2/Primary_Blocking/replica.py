@@ -59,19 +59,22 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 			print(repl.name + " | " + repl.addr)
 		return replica_pb2.RequestStatus(status=True)
 	
-	def canWrite(self, request):
+	def canWrite(self, request: replica_pb2.WriteDetails):
 		can_write = True
 		status = "SUCCESS"
 
 		if request.uuid in self.uuid_to_file:
-			if self.uuid_to_file[request.uuid] != "" and os.path.exists(self.filesytem_root + "/" + self.uuid_to_file[request.uuid]):
+			if self.uuid_to_file[request.uuid] != "" and os.path.exists(self.filesytem_root + "/" + request.name):
 				# update 
 				can_write = True
 				status = "SUCCESS" 
-			else:
+			elif self.uuid_to_file[request.uuid] == "":
 				# DELETED
 				can_write = False
 				status = "CAN\'T UPDATE DELETED FILE"
+			else:
+				can_write = False
+				status = "WRONG FILE NAME"
 		else: 
 			if request.name in self.filename_to_uuid:
 				can_write = False
@@ -84,10 +87,17 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 
 	# Handles write request 
 	def WriteRequest(self, request: replica_pb2.WriteDetails, context) -> replica_pb2.WriteResponse:
+		if request.primary_hop == False and self.is_primary == False:
+			with grpc.insecure_channel(self.primaryReplicaAddr) as prim_channel:
+				request.primary_hop = True
+				prim_stub = replica_pb2_grpc.ReplicaStub(prim_channel)
+				return prim_stub.WriteRequest(request)
+		
 		can_write, status = True, "SUCCESS"
 		if self.is_primary == True:
 			# Write and send write reqs to other replcas 
 			can_write, status = self.canWrite(request)
+			request.primary_hop = True
 			if can_write == False:
 				return replica_pb2.WriteResponse(status=status, name=request.name, content=request.content, version="")
 			else:
@@ -135,7 +145,7 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 		return replica_pb2.WriteResponse(status=status, name=request.name, content=request.content, version=file_version)
 
 	def ReadRequest(self, request: replica_pb2.ReadDetails, context) -> replica_pb2.ReadResponse:
-		if request.uuid in self.uuid_to_file:
+		if request.uuid in self.uuid_to_file and self.uuid_to_file[request.uuid] != "":
 			file_path = self.filesytem_root + '/' + self.uuid_to_file[request.uuid]
 			# in memory map 
 			if os.path.exists(file_path):
@@ -158,7 +168,11 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 
 	# Handles delete request 
 	def DeleteRequest(self, request: replica_pb2.DeleteDetails, context) -> replica_pb2.DeleteResponse:
-		can_write, status = True, "SUCCESS"
+		if request.primary_hop == False and self.is_primary == False:
+			with grpc.insecure_channel(self.primaryReplicaAddr) as prim_channel:
+				request.primary_hop = True
+				prim_stub = replica_pb2_grpc.ReplicaStub(prim_channel)
+				return prim_stub.DeleteRequest(request)
 		
 		if request.uuid not in self.uuid_to_file:
 			return replica_pb2.DeleteResponse(status="Invalid UUID!")
@@ -168,6 +182,7 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 
 		if self.is_primary == True:
 			# Delete and send delete reqs to other replcas 
+			request.primary_hop = True
 
 			os.remove(self.filesytem_root + "/" + self.uuid_to_file[request.uuid])
 
@@ -209,7 +224,7 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 
 			return replica_pb2.DeleteResponse(status="SUCCESS")
 
-		return replica_pb2.DeleteResponse(status=status)
+		return replica_pb2.DeleteResponse(status="SUCCESS")
 
 		
 			

@@ -27,6 +27,7 @@ message WriteDetails {
 	string content = 2;
 	string uuid = 3;
 	string version = 4;
+	bool primary_hop = 5;
 }
 
 message WriteResponse {
@@ -50,6 +51,7 @@ message ReadResponse {
 message DeleteDetails {
 	string uuid = 1;
 	string version = 2;
+	bool primary_hop = 3;
 }
 
 message DeleteResponse {
