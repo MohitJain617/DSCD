@@ -1,0 +1,38 @@
+syntax = "proto3";
+package backuprs;
+
+// Registry server messages
+service RegistryServer {
+  // Register a live replica
+  rpc RegisterReplica (ReplicaDetails) returns (RequestStatus) {}
+
+  // Get the whole Replica list
+  rpc GetReplicaList (ClientDetails) returns (ReplicaList) {}
+
+  // Get replica list for read operations
+  rpc GetReadReplicaList (ClientDetails) returns (ReplicaList) {}
+
+  // Get replica list for write operations
+  rpc GetWriteReplicaList (ClientDetails) returns (ReplicaList) {}
+
+}
+
+message ClientDetails {
+  string client_uuid = 1;
+}
+
+message RequestStatus {
+  bool status = 1;
+}
+
+// Server details containing name and address
+message ReplicaDetails {
+  string name = 1;
+  string addr = 2;
+}
+
+// List of replicas
+message ReplicaList {
+  // array of server details
+  repeated ReplicaDetails replica_list = 1;
+}
