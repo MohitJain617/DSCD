@@ -170,6 +170,9 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 			# Delete and send delete reqs to other replcas 
 
 			os.remove(self.filesytem_root + "/" + self.uuid_to_file[request.uuid])
+
+			# remove from filename_to_uuid dict as well
+			self.filename_to_uuid.pop(self.uuid_to_file[request.uuid])
 			self.uuid_to_file[request.uuid] = ""
 			new_version = str(datetime.fromtimestamp(time.time()))
 			self.uuid_to_version[request.uuid] = new_version
@@ -198,6 +201,8 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 		else: 
 
 			os.remove(self.filesytem_root + "/" + self.uuid_to_file[request.uuid])
+
+			self.filename_to_uuid.pop(self.uuid_to_file[request.uuid])
 			self.uuid_to_file[request.uuid] = ""
 			new_version = request.version
 			self.uuid_to_version[request.uuid] = new_version

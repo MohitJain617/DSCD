@@ -1,5 +1,6 @@
 from concurrent import futures 
 
+import time
 import grpc
 import registryserver_pb2
 import registryserver_pb2_grpc
@@ -104,7 +105,8 @@ class Client:
 		print("Enter the uuid of the file you want to request:")
 		file_uuid = input() 
 
-		response = self.primary_replica_stub.DeleteRequest(replica_pb2.DeleteDetails(uuid=file_uuid, version=""))
+		version = str(datetime.fromtimestamp(time.time()))
+		response = self.primary_replica_stub.DeleteRequest(replica_pb2.DeleteDetails(uuid=file_uuid, version=version))
 
 		print(f"Status: {response.status}")
 		# print(f"Name: {response.name}")
