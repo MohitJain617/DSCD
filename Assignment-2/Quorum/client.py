@@ -15,7 +15,6 @@ import config
 
 MANUAL_TESTING = False
 
-
 regServerAddr =  config.REG_SERVER_ADDR
 
 
@@ -181,18 +180,28 @@ class Client:
 
 
 if __name__ == '__main__':
+	
 	ch = 'x'
 	file = open('testing_input_client.txt', 'r')
 	registryChannel = grpc.insecure_channel(regServerAddr)
 	registryStub = registryserver_pb2_grpc.RegistryServerStub(registryChannel)
 	client = Client(registryStub, file)
+
 	while(ch != 'q'):
+		
 		print("---------------####----------------")
 		print("Get replica list (g) | Write (w) | Read (r) | Delete (d) | Quit (q):")
+		
 		if(MANUAL_TESTING) :
 			ch = input().lower()
 		else:
 			ch = file.readline().strip().lower()
+
+		if(not ch) :
+			ch = input()
+			break
+
+		print(ch)
 
 		if(ch == 'q'):
 			break 
