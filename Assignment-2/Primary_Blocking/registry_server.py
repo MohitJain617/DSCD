@@ -60,13 +60,18 @@ class RegistryServer(registryserver_pb2_grpc.RegistryServerServicer):
 	
 	
 def serve():
+	
 	port = config.REG_SERVER_PORT
 	server = grpc.server(futures.ThreadPoolExecutor(max_workers=12))
 	registryserver_pb2_grpc.add_RegistryServerServicer_to_server(RegistryServer(), server)
 	server.add_insecure_port('[::]:' + port)
 	server.start()
 	print("Registry Server started, listening on " + port)
-	server.wait_for_termination()
+	
+	try:
+		server.wait_for_termination()
+	except KeyboardInterrupt:
+		server.stop(0)
  
 if __name__ == '__main__':
     serve()
