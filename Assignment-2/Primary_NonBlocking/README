@@ -10,3 +10,4 @@
 
 > Currenlty the testing is hardcoded in the sense that for read and delete it uses the latest written uuid by the client. (self.uuids[-1])
 
+Reference : http://cs.boisestate.edu/~amit/teaching/555/handouts/replication-and-consistency-handout.pdf
