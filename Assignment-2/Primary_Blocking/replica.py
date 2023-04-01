@@ -146,25 +146,52 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 		return replica_pb2.WriteResponse(status=status, name=request.name, content=request.content, version=file_version)
 
 	def ReadRequest(self, request: replica_pb2.ReadDetails, context) -> replica_pb2.ReadResponse:
-		if request.uuid in self.uuid_to_file and self.uuid_to_file[request.uuid] != "":
+		
+		# if request.uuid in self.uuid_to_file and self.uuid_to_file[request.uuid] != "":
+		# 	file_path = self.filesytem_root + '/' + self.uuid_to_file[request.uuid]
+		# 	# in memory map 
+		# 	if os.path.exists(file_path):
+		# 		# file not deleted 
+		# 		file_name = self.uuid_to_file[request.uuid]
+		# 		with open(file_path, "r") as f:
+		# 			file_content = f.read()
+		# 		file_version = self.uuid_to_version[request.uuid]
+
+		# 		return replica_pb2.ReadResponse(status="SUCCESS", name=file_name, content=file_content, version=file_version)
+		# 	else: 
+		# 		# file deleted! 
+		# 		status = "FILE ALREADY DELETED"
+		# 		return replica_pb2.ReadResponse(status=status, name="", content="", version="")
+		# else:
+		# 	# file doesn't exist 
+		# 	status = "FILE DOES NOT EXIST"
+		# 	return replica_pb2.ReadResponse(status=status, name="", content="", version="")
+
+
+		if request.uuid not in self.uuid_to_file :
+			return replica_pb2.ReadResponse(status='FILE DOES NOT EXIST', name=None, content=None, version=None)
+		
+		elif self.uuid_to_file[request.uuid] == '' :
+			status = "FILE HAS BEEN DELETED"
+			return replica_pb2.ReadResponse(status=status, name=None, content=None, version=None)
+
+		else :
+			
 			file_path = self.filesytem_root + '/' + self.uuid_to_file[request.uuid]
-			# in memory map 
+			
 			if os.path.exists(file_path):
+				
 				# file not deleted 
 				file_name = self.uuid_to_file[request.uuid]
 				with open(file_path, "r") as f:
 					file_content = f.read()
 				file_version = self.uuid_to_version[request.uuid]
-
 				return replica_pb2.ReadResponse(status="SUCCESS", name=file_name, content=file_content, version=file_version)
+			
 			else: 
 				# file deleted! 
-				status = "FILE ALREADY DELETED"
-				return replica_pb2.ReadResponse(status=status, name="", content="", version="")
-		else:
-			# file doesn't exist 
-			status = "FILE DOES NOT EXIST"
-			return replica_pb2.ReadResponse(status=status, name="", content="", version="")
+				status = "BAD HAPPENED"
+				return replica_pb2.ReadResponse(status=status, name=None, content=None, version=None)
 
 
 	# Handles delete request 
@@ -229,12 +256,6 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 
 		
 			
-
-				
-
-
-
-
 def serve(port, s):
 	server = grpc.server(futures.ThreadPoolExecutor(max_workers=15))
 	replica_pb2_grpc.add_ReplicaServicer_to_server(s, server)

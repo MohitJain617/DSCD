@@ -21,7 +21,7 @@ class RegistryServer(registryserver_pb2_grpc.RegistryServerServicer):
 		self.setupFileSystem()
 
 	def setupFileSystem(self):
-		subprocess.run("./clean_file_system.sh")
+		subprocess.run(".\clean_file_system.bat", shell = True)
 
 
 	def GetPrimaryReplica(self, request, context):

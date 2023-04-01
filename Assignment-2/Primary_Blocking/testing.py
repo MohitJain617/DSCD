@@ -21,4 +21,4 @@ for i in range(N_Replicas) :
     subprocess.Popen(['start', 'cmd', '/c', command], shell=True)
     time.sleep(1)
 
-subprocess.Popen(['start', 'cmd', '/c', 'python client.py' + " " + Replica_info[i]], shell=True)
+subprocess.Popen(['start', 'cmd', '/c', 'python client1.py' + " " + Replica_info[i]], shell=True)
