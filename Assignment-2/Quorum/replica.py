@@ -12,6 +12,7 @@ import os
 import uuid
 import config
 import pathlib
+import sys
 
 regServerAddr = config.REG_SERVER_ADDR
 
@@ -138,22 +139,21 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 		return replica_pb2.DeleteResponse(status="SUCCESS")
 
 
-			
-
-
-
-
 def serve(port, s):
 	server = grpc.server(futures.ThreadPoolExecutor(max_workers=15))
 	replica_pb2_grpc.add_ReplicaServicer_to_server(s, server)
 	server.add_insecure_port('[::]:' + port)
 	server.start()
-	print("Server started, listening on " + port)
-	server.wait_for_termination()
+	print("\nServer " + s.name + " started, listening on " + port + "\n")
+	try:
+		server.wait_for_termination()
+	except KeyboardInterrupt:
+		server.stop(0)
  
 if __name__ == '__main__':
-	name = input("Enter replica name: ")
-	port = input("Enter port:")
+	args = sys.argv
+	name = str(args[1])
+	port = str(args[2])
 	s = Replica(name, 'localhost', port)
 	if(s.RegisterReplica()):
 		serve(port, s)
