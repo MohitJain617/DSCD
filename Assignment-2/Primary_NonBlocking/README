@@ -1,0 +1,12 @@
+- The client reads the input from testing_input_client.txt file if MANUAL_TESTING = False in client.py else we need to give the inputs manually
+
+- python testing.py 
+
+> testing.py creates and runs the registry_server, replicas (N_Replicas in testing.py) and client in seperate terminals
+
+> Note the DELAY_TIME variable in replica, that is basically to make Non-blocking evident as it adds delay after updating each replica.
+
+> Time between each client query > n*DELAY_TIME (Time to update all the replicas)
+
+> Currenlty the testing is hardcoded in the sense that for read and delete it uses the latest written uuid by the client. (self.uuids[-1])
+
