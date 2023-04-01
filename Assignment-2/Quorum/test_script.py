@@ -15,6 +15,8 @@ client_inputs = [ 'w\nu\nselfassigneduuid1\nfile1\nThis is content for File 1.\n
 # Send multiple inputs to the subprocess and accumulate its output
 output = ""
 errors = ""
+client_inputs = ['w\n', 'u\n', 'selfassigneduuid1\n', 'file1\n', 'This is content for File 1.\n', 'q\n']
+client_inputs = ['que\n',]
 for input_data in client_inputs:
 	print("Sending input to client: ", input_data)
 	# Send input to the subprocess
@@ -23,8 +25,8 @@ for input_data in client_inputs:
 	print("input sent")
 
     # Read output from the subprocess
-	output += client_process.stdout.read().decode('utf-8')
-	errors += client_process.stderr.read().decode('utf-8')
+	output += client_process.stdout.read()
+	# errors += client_process.stderr.read()
 	print("Output decoded")
 
 # Close the subprocess's input stream

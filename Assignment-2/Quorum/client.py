@@ -13,17 +13,21 @@ import os
 import uuid
 import config
 
+MANUAL_TESTING = False
+
 
 regServerAddr =  config.REG_SERVER_ADDR
 
 
 class Client:
 
-	def __init__(self, reg_server_stub: registryserver_pb2_grpc.RegistryServerStub) -> None:
+	def __init__(self, reg_server_stub: registryserver_pb2_grpc.RegistryServerStub, file) -> None:
 		self.id = str(uuid.uuid4())
 		self.reg_server_stub = reg_server_stub 
 		self.replica_list = None
 		self.GetReplicaList()
+		self.test_file = file
+		self.uuids = []
 		
 		# self.pr
 
@@ -39,15 +43,25 @@ class Client:
 		# get all the write replicas
 		write_replicas = self.reg_server_stub.GetWriteReplicaList(registryserver_pb2.ClientDetails(client_uuid=self.id))
   
-		print("Update Existing File (u) | New File (n)")
-		ch = input().lower()
+		if(MANUAL_TESTING):
+			ch = input("Update Existing File (u) | New File (n)").lower()
+		else:
+			ch = self.test_file.readline().strip().lower()
+			print("Update Existing File (u) | New File (n)")
+   
 		if ch == 'u':
-			print("Enter file uuid: ")
-			file_uuid = input()
-			print("Enter file name: ")
-			file_name = input()
-			print("Enter content: ")
-			file_content = input()
+			if(MANUAL_TESTING) : 
+				file_uuid = input("Enter file uuid: ")
+				file_name = input("Enter file name: ")
+				file_content = input("Enter content: ")
+
+			else :
+				file_uuid = self.uuids[0]
+				file_name = self.test_file.readline().strip()
+				file_content = self.test_file.readline().strip()
+				print("Enter file uuid: " + str(file_uuid))
+				print("Enter file name: " + str(file_name))
+				print("Enter content: " + str(file_content))
 
 			print()
 			for replica in write_replicas.replica_list:
@@ -62,11 +76,18 @@ class Client:
 
 		elif ch == 'n':
 			file_uuid = str(uuid.uuid4())
+			self.uuids.append(file_uuid)
 			print(f"File uuid: {file_uuid}")
-			print("Enter file name: ")
-			file_name = input()
-			print("Enter content: ")
-			file_content = input()
+
+			if(MANUAL_TESTING) : 
+				file_name = input('Enter file name : ')
+				file_content = input("Enter content : ")
+			else :
+				file_name = self.test_file.readline().strip()
+				file_content = self.test_file.readline().strip()
+				print("Enter file name: " + str(file_name))
+				print("Enter content: " + str(file_content))
+
 			for replica in write_replicas.replica_list:
 				with grpc.insecure_channel(replica.addr) as replica_channel:
 					replica_stub = replica_pb2_grpc.ReplicaStub(replica_channel)
@@ -85,8 +106,13 @@ class Client:
 		# get all the write replicas
 		write_replicas = self.reg_server_stub.GetWriteReplicaList(registryserver_pb2.ClientDetails(client_uuid=self.id))
 
-		print("Enter the uuid of the file you want to request:")
-		file_uuid = input() 
+		if(MANUAL_TESTING) : 
+			file_uuid = input("Enter the uuid of the file you want to request: ") 
+
+		else:
+			file_uuid = self.uuids[-1]   # Kind of Hardcoded
+			print("Enter the uuid of the file you want to request: " + file_uuid)
+
 		version = str(datetime.fromtimestamp(time.time()))
 
 		# delete from all write replicas
@@ -109,9 +135,13 @@ class Client:
 		# get all the read replicas
 		read_replicas = self.reg_server_stub.GetReadReplicaList(registryserver_pb2.ClientDetails(client_uuid=self.id))
 
-		print("Enter the uuid of the file you want to request:")
-		file_uuid = input() 
-		
+		if(MANUAL_TESTING) : 
+			file_uuid = input("Enter the uuid of the file you want to request: ") 
+
+		else:
+			file_uuid = self.uuids[-1]   # Kind of Hardcoded
+			print("Enter the uuid of the file you want to request: " + file_uuid)
+
 		latestResponse = None
 		# query all the read replicas and get the latest version
 		for replica in read_replicas.replica_list:
@@ -152,13 +182,18 @@ class Client:
 
 if __name__ == '__main__':
 	ch = 'x'
+	file = open('testing_input_client.txt', 'r')
 	registryChannel = grpc.insecure_channel(regServerAddr)
 	registryStub = registryserver_pb2_grpc.RegistryServerStub(registryChannel)
-	client = Client(registryStub)
+	client = Client(registryStub, file)
 	while(ch != 'q'):
 		print("---------------####----------------")
 		print("Get replica list (g) | Write (w) | Read (r) | Delete (d) | Quit (q):")
-		ch = input().lower()
+		if(MANUAL_TESTING) :
+			ch = input().lower()
+		else:
+			ch = file.readline().strip().lower()
+
 		if(ch == 'q'):
 			break 
 		elif(ch == 'g'):
@@ -172,9 +207,4 @@ if __name__ == '__main__':
 		else:
 			print("Invalid input")
 		print("-----------------------------------")
-		sys.stdout.flush()
-		sys.stderr.flush()
-
-	sys.stdout.flush()
-	sys.stderr.flush()
 	
