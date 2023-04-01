@@ -1,5 +1,6 @@
 from concurrent import futures 
 
+import sys
 import time
 import grpc
 import registryserver_pb2
@@ -48,14 +49,14 @@ class Client:
 			print("Enter content: ")
 			file_content = input()
 
+			print()
 			for replica in write_replicas.replica_list:
+				print("Replica: ", replica.name, replica.addr)
 				with grpc.insecure_channel(replica.addr) as replica_channel:
 					replica_stub = replica_pb2_grpc.ReplicaStub(replica_channel)
 					write_details = replica_pb2.WriteDetails(name=file_name, uuid=file_uuid, content=file_content)
 					response = replica_stub.WriteRequest(write_details)
 				print(f"Status: {response.status}")
-				print(f"Name: {response.name}")
-				print(f"Content: {response.content}")
 				print(f"Version: {response.version}")
 				print()
 
@@ -72,8 +73,6 @@ class Client:
 					write_details = replica_pb2.WriteDetails(name=file_name, uuid=file_uuid, content=file_content)
 					response = replica_stub.WriteRequest(write_details)
 				print(f"Status: {response.status}")
-				print(f"Name: {response.name}")
-				print(f"Content: {response.content}")
 				print(f"Version: {response.version}")
 				print()
 
@@ -173,4 +172,9 @@ if __name__ == '__main__':
 		else:
 			print("Invalid input")
 		print("-----------------------------------")
+		sys.stdout.flush()
+		sys.stderr.flush()
+
+	sys.stdout.flush()
+	sys.stderr.flush()
 	

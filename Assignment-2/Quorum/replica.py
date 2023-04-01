@@ -51,14 +51,17 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 		status = "SUCCESS"
 
 		if request.uuid in self.uuid_to_file:
-			if self.uuid_to_file[request.uuid] != "" and os.path.exists(self.filesytem_root + "/" + self.uuid_to_file[request.uuid]):
+			if self.uuid_to_file[request.uuid] != "" and os.path.exists(self.filesytem_root + "/" + request.name):
 				# update 
 				can_write = True
 				status = "SUCCESS" 
-			else:
+			elif self.uuid_to_file[request.uuid] == "":
 				# DELETED
 				can_write = False
 				status = "CAN\'T UPDATE DELETED FILE"
+			else:
+				can_write = False
+				status = "WRONG FILE NAME"
 		else: 
 			if request.name in self.filename_to_uuid:
 				can_write = False
@@ -92,12 +95,10 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 
 	def ReadRequest(self, request: replica_pb2.ReadDetails, context) -> replica_pb2.ReadResponse:
 		if request.uuid in self.uuid_to_file:
-			print("UUID in memory map")
 			file_path = self.filesytem_root + '/' + self.uuid_to_file[request.uuid]
 			# in memory map 
 			if self.uuid_to_file[request.uuid] != '' and os.path.exists(file_path):
 				# file not deleted 
-				print("file exists")
 				file_name = self.uuid_to_file[request.uuid]
 				with open(file_path, "r") as f:
 					file_content = f.read()
@@ -105,7 +106,6 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 
 				return replica_pb2.ReadResponse(status="SUCCESS", name=file_name, content=file_content, version=file_version)
 			else: 
-				print("file has been deleted")
 				version = ""
 				if request.uuid in self.uuid_to_version:
 					version = self.uuid_to_version[request.uuid]
@@ -113,7 +113,6 @@ class Replica(replica_pb2_grpc.ReplicaServicer):
 				status = "FILE ALREADY DELETED"
 				return replica_pb2.ReadResponse(status=status, name="", content="", version=version)
 		else:
-			print("file never created here")
 			# file doesn't exist 
 			return replica_pb2.ReadResponse(status="NO FILE RECORD", name="", content="", version="")
 		
