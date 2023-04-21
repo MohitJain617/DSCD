@@ -6,12 +6,98 @@ import time
 import os
 import sys
 
+
+INPUT_DIR = "Data/Inputs"
+MAPPER_DIR = "Data/Mappers"
+
 # create gRPC server
 class Mapper(mapper_pb2_grpc.MapperServicer):
 	def __init__(self, addr, port, name):
 		self.addr = addr
 		self.port = port
 		self.dir_name = name
+
+	def ASCII_SUM(self, word) :
+		val = 0
+		for c in word :
+			val += ord(c)
+		return val
+
+	def word_count_handler(self, input_files, N_Reducers = 3) :
+
+		word_count = {}
+
+		for file in input_files : 
+			input_file_path = os.path.join(INPUT_DIR, file)
+			with open(input_file_path, 'r') as file :
+				for line in file :
+					if line[-1] == '\n' :
+						line = line[:-1]
+					words = line.split(' ')
+					for word in words :
+						word = word.lower()
+						if(word in word_count):
+							word_count[word] += 1
+						else :
+							word_count[word] = 1 
+
+		os.mkdir(os.path.join(MAPPER_DIR, self.dir_name))
+
+		for word in word_count : 
+			val = self.ASCII_SUM(word)
+			output = word + ' ' + str(word_count[word]) + '\n'
+			out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.dir_name), str((val % N_Reducers) + 1) + '.txt')
+			with open(out_file_path, 'a+') as file:
+				file.write(output)
+
+		print(word_count)
+
+	def inverted_index_handler(self, input_files, N_Reducers = 3) :
+
+		inverted_index = {}
+		count = 0
+		for file in input_files : 
+			count += 1
+			input_file_path = os.path.join(INPUT_DIR, file)
+			with open(input_file_path, 'r') as file :
+				for line in file :
+					if line[-1] == '\n' :
+						line = line[:-1]
+					words = line.split(' ')
+					for word in words :
+						word = word.lower()
+						if(word in inverted_index and inverted_index[word][-1] != count):
+							inverted_index[word].append(count)
+						elif(word not in inverted_index) :
+							inverted_index[word] = [count]
+
+		os.mkdir(os.path.join(MAPPER_DIR, self.dir_name))
+
+		for word in inverted_index : 
+			val = self.ASCII_SUM(word)
+			output = word + ' ' + str(", ".join(str(x) for x in inverted_index[word])) + '\n'
+			out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.ID), str((val % N_Reducers) + 1) + '.txt')
+			with open(out_file_path, 'a+') as file:
+				file.write(output)
+
+		print(inverted_index)
+
+	def natural_join_handler(self, input_files, N_Reducers) :
+		return -1
+
+	def helper(self, input_files, task, n_reducers) :
+		
+		if(task == 'WORD COUNT') :
+			return self.word_count_handler(input_files, n_reducers)
+		
+		elif(task == 'INVERTED INDEX') :
+			return self.inverted_index_handler(input_files, n_reducers)
+
+		elif(task == 'NATURAL JOIN') :
+			return self.natural_join_handler(input_files, n_reducers)
+
+		else :
+			return False
 
 	def ProcessFiles(self, request, context):
 		print("Map request received", self.dir_name)
