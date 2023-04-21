@@ -50,7 +50,7 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 			with open(out_file_path, 'a+') as file:
 				file.write(output)
 
-		print(word_count)
+		return True
 
 	def inverted_index_handler(self, input_files, N_Reducers = 3) :
 
@@ -80,10 +80,10 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 			with open(out_file_path, 'a+') as file:
 				file.write(output)
 
-		print(inverted_index)
+		return True
 
 	def natural_join_handler(self, input_files, N_Reducers) :
-		return -1
+		return True
 
 	def helper(self, input_files, task, n_reducers) :
 		
@@ -101,8 +101,10 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 
 	def ProcessFiles(self, request, context):
 		print("Map request received", self.dir_name)
-		print(request)
-		return mapper_pb2.ProcessFilesResponse(response=True)
+		file_names = [elem for elem in request.filenames]
+		verdict = self.helper(file_names, request.task, request.num_reducers )
+		print(verdict)
+		return mapper_pb2.ProcessFilesResponse(response=verdict)
 
 
 if __name__ == '__main__':
