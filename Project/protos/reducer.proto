@@ -1,0 +1,16 @@
+syntax = "proto3";
+package reducers;
+
+// Server queries
+service Reducer {
+	rpc ProcessFiles(ProcessFilesRequest) returns (ProcessFilesResponse) {}
+}
+
+message ProcessFilesRequest {
+	string name = 1;
+	int32 version = 2;
+}
+
+message ProcessFilesResponse {
+	bool response = 1;
+}
