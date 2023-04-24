@@ -5,12 +5,12 @@ from typing import ClassVar as _ClassVar, Optional as _Optional
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class ProcessFilesRequest(_message.Message):
-    __slots__ = ["name", "version"]
-    NAME_FIELD_NUMBER: _ClassVar[int]
-    VERSION_FIELD_NUMBER: _ClassVar[int]
-    name: str
-    version: int
-    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ...) -> None: ...
+    __slots__ = ["id", "task"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    TASK_FIELD_NUMBER: _ClassVar[int]
+    id: str
+    task: str
+    def __init__(self, id: _Optional[str] = ..., task: _Optional[str] = ...) -> None: ...
 
 class ProcessFilesResponse(_message.Message):
     __slots__ = ["response"]

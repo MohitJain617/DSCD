@@ -41,6 +41,7 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 						else :
 							word_count[word] = 1 
 
+		print("Word count: ", word_count, self.dir_name)
 		os.mkdir(os.path.join(MAPPER_DIR, self.dir_name))
 
 		for word in word_count : 
@@ -55,9 +56,8 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 	def inverted_index_handler(self, input_files, N_Reducers = 3) :
 
 		inverted_index = {}
-		count = 0
 		for file in input_files : 
-			count += 1
+			count = int(file[-5])
 			input_file_path = os.path.join(INPUT_DIR, file)
 			with open(input_file_path, 'r') as file :
 				for line in file :
@@ -76,7 +76,7 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 		for word in inverted_index : 
 			val = self.ASCII_SUM(word)
 			output = word + ' ' + str(", ".join(str(x) for x in inverted_index[word])) + '\n'
-			out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.ID), str((val % N_Reducers) + 1) + '.txt')
+			out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.dir_name), str((val % N_Reducers) + 1) + '.txt')
 			with open(out_file_path, 'a+') as file:
 				file.write(output)
 
@@ -88,6 +88,7 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 	def helper(self, input_files, task, n_reducers) :
 		
 		if(task == 'WORD COUNT') :
+			print("Helper called with ", input_files)
 			return self.word_count_handler(input_files, n_reducers)
 		
 		elif(task == 'INVERTED INDEX') :
@@ -102,6 +103,7 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 	def ProcessFiles(self, request, context):
 		print("Map request received", self.dir_name)
 		file_names = [elem for elem in request.filenames]
+		print(file_names)
 		verdict = self.helper(file_names, request.task, request.num_reducers )
 		print(verdict)
 		return mapper_pb2.ProcessFilesResponse(response=verdict)
@@ -117,7 +119,7 @@ if __name__ == '__main__':
 	mapper_pb2_grpc.add_MapperServicer_to_server(obj, server)
 	server.add_insecure_port('[::]:'+port)
 	server.start()
-	print(name, "Server started")
+	print(name, "Mapper started")
 	time.sleep(300) # run for 5 mins
-	print("server done")
+	print("Mapper done")
 	server.stop(0)

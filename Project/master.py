@@ -5,6 +5,8 @@ import glob
 import grpc
 import mapper_pb2
 import mapper_pb2_grpc
+import reducer_pb2
+import reducer_pb2_grpc
 from ast import literal_eval
 
 def execute_mapper(arg):
@@ -28,6 +30,24 @@ def execute_mapper(arg):
 			print("Error in mapper", name)
 	
 	print("Mapped for", name) 
+
+def execute_reducer(arg):
+	arglist = literal_eval(arg)
+	filename = arglist[0]
+	inp_task = arglist[1]
+	port = arglist[2]
+	r_id = arglist[3]
+
+	subprocess.Popen(["python3", "reduces.py", port, r_id])
+	time.sleep(1)
+	processFiles = reducer_pb2.ProcessFilesRequest(id=filename, task=inp_task)
+	with grpc.insecure_channel('localhost:'+port) as channel:
+		stub = reducer_pb2_grpc.ReducerStub(channel)
+		response = stub.ProcessFiles(processFiles)
+		if(response.response == False):
+			print("Error in reducer", r_id)
+	print("Reduced for", r_id)
+	
 
 
 if __name__ == '__main__':
@@ -53,19 +73,38 @@ if __name__ == '__main__':
 
 	# Distribute files among mappers
 	for i in range(len(file_names)):
-		processDetailsList[i % num_mappers].append(file_names[i])
+		processDetailsList[i % num_mappers].append(file_names[i][12:])
 	
 	# Assign ports and names to mappers
 	port = 50052
 	for i in range(len(processDetailsList)):
 		processDetailsList[i].extend([inp_task, str(num_reducers), str(port), "M"+str(i+1)])
+		processDetailsList[i] = repr(processDetailsList[i])
 		port += 1
 	
-	for i in range(len(processDetailsList)):
-		processDetailsList[i] = repr(processDetailsList[i])
 		
-	print(processDetailsList)
 	# Executing mappers in parallel
+	# execute_mapper(processDetailsList[0])
 	with Pool() as pool:
-		pool.map(execute_mapper, processDetailsList)
+		result = pool.map_async(execute_mapper, processDetailsList)
+		result.wait()
+		
+	print("All mappers done")
+	
+	# Executing reducers
+	processDetailsList = []
+
+	for i in range(num_reducers):
+		processDetailsList.append([str(i+1), inp_task, str(port), str(i+1)])
+		processDetailsList[i] = repr(processDetailsList[i])
+		port += 1
+	
+	print()
+	print()
+	print()
+	with Pool() as pool:
+		result = pool.map_async(execute_reducer, processDetailsList)
+		result.wait()
+	
+	print("All reducers done")
 	
