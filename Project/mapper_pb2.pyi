@@ -5,6 +5,12 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Optional as _Op
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class KV(_message.Message):
+    __slots__ = ["dict_object"]
+    DICT_OBJECT_FIELD_NUMBER: _ClassVar[int]
+    dict_object: str
+    def __init__(self, dict_object: _Optional[str] = ...) -> None: ...
+
 class ProcessFilesRequest(_message.Message):
     __slots__ = ["filenames", "num_reducers", "task"]
     FILENAMES_FIELD_NUMBER: _ClassVar[int]
@@ -20,3 +26,9 @@ class ProcessFilesResponse(_message.Message):
     RESPONSE_FIELD_NUMBER: _ClassVar[int]
     response: bool
     def __init__(self, response: bool = ...) -> None: ...
+
+class ReducerID(_message.Message):
+    __slots__ = ["id"]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: int
+    def __init__(self, id: _Optional[int] = ...) -> None: ...

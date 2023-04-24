@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rreducer.proto\x12\x08reducers\"/\n\x13ProcessFilesRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04task\x18\x02 \x01(\t\"(\n\x14ProcessFilesResponse\x12\x10\n\x08response\x18\x01 \x01(\x08\x32Z\n\x07Reducer\x12O\n\x0cProcessFiles\x12\x1d.reducers.ProcessFilesRequest\x1a\x1e.reducers.ProcessFilesResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rreducer.proto\x12\x08reducers\"2\n\x13ProcessFilesRequest\x12\x0c\n\x04task\x18\x02 \x01(\t\x12\r\n\x05ports\x18\x03 \x03(\t\"(\n\x14ProcessFilesResponse\x12\x10\n\x08response\x18\x01 \x01(\x08\x32Z\n\x07Reducer\x12O\n\x0cProcessFiles\x12\x1d.reducers.ProcessFilesRequest\x1a\x1e.reducers.ProcessFilesResponse\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'reducer_pb2', globals())
@@ -21,9 +21,9 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _PROCESSFILESREQUEST._serialized_start=27
-  _PROCESSFILESREQUEST._serialized_end=74
-  _PROCESSFILESRESPONSE._serialized_start=76
-  _PROCESSFILESRESPONSE._serialized_end=116
-  _REDUCER._serialized_start=118
-  _REDUCER._serialized_end=208
+  _PROCESSFILESREQUEST._serialized_end=77
+  _PROCESSFILESRESPONSE._serialized_start=79
+  _PROCESSFILESRESPONSE._serialized_end=119
+  _REDUCER._serialized_start=121
+  _REDUCER._serialized_end=211
 # @@protoc_insertion_point(module_scope)

@@ -59,10 +59,10 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 			out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.dir_name), str(i+1) + '.txt')	
 			
 			str_dict = str(reducers_dicts[i]) 
-			with open(out_file_path, "wb") as f:
+			with open(out_file_path, "w") as f:
 				f.write(str_dict)
 
-			# with open(out_file_path, "wb") as f:
+			# with open(out_file_path, "w") as f:
 			# 	pickle.dump(reducers_dicts[i], out_file_path)
 
 		return True
@@ -103,10 +103,10 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 			out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.dir_name), str(i+1) + '.txt')	
 			
 			str_dict = str(reducers_dict[i]) 
-			with open(out_file_path, "wb") as f:
+			with open(out_file_path, "w") as f:
 				f.write(str_dict)
 
-			# with open(out_file_path, "wb") as f:
+			# with open(out_file_path, "w") as f:
 			# 	pickle.dump(reducers_dicts[i], out_file_path)
 		
 
@@ -140,8 +140,12 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 	
 	def ReturnKV(self, request, context):
 		curr_id = request.id
-		
-		return mapper_pb2.KV(dict_object=)
+		curr_file = os.path.join(MAPPER_DIR, self.dir_name, str(curr_id) + '.txt')
+		if(not os.path.exists(curr_file)):
+			return mapper_pb2.KV(dict_object = "{}")
+		with open(curr_file, "rb") as f:
+			curr_dict = f.read() 
+		return mapper_pb2.KV(dict_object = curr_dict)
 
 
 if __name__ == '__main__':

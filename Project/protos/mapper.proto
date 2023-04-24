@@ -4,7 +4,7 @@ package mappers;
 // Server queries
 service Mapper {
 	rpc ProcessFiles(ProcessFilesRequest) returns (ProcessFilesResponse) {}
-	rpc ReturnKV(reducerID) returns (KV) {}
+	rpc ReturnKV(ReducerID) returns (KV) {}
 }
 message ProcessFilesRequest {
 	repeated string filenames = 1;
@@ -14,7 +14,7 @@ message ProcessFilesRequest {
 message ProcessFilesResponse {
 	bool response = 1;
 }
-message reducerID {
+message ReducerID {
 	int32 id = 1;
 }
 message KV {

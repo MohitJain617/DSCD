@@ -34,14 +34,16 @@ def execute_mapper(arg):
 
 def execute_reducer(arg):
 	arglist = literal_eval(arg)
-	filename = arglist[0]
-	inp_task = arglist[1]
-	port = arglist[2]
-	r_id = arglist[3]
+	ports = arglist[0:-3]
+	inp_task = arglist[-3]
+	port = arglist[-2]
+	r_id = arglist[-1]
 
 	subprocess.Popen(["python3", "reduces.py", port, r_id])
 	time.sleep(1)
-	processFiles = reducer_pb2.ProcessFilesRequest(id=filename, task=inp_task)
+	processFiles = reducer_pb2.ProcessFilesRequest(task=inp_task)
+	processFiles.ports.extend(ports)
+
 	with grpc.insecure_channel('localhost:'+port) as channel:
 		stub = reducer_pb2_grpc.ReducerStub(channel)
 		response = stub.ProcessFiles(processFiles)
@@ -80,9 +82,11 @@ if __name__ == '__main__':
 	
 	# Assign ports and names to mappers
 	port = 50052
+	portslist = []
 	for i in range(len(processDetailsList)):
 		processDetailsList[i].extend([inp_task, str(num_reducers), str(port), "M"+str(i+1)])
 		processDetailsList[i] = repr(processDetailsList[i])
+		portslist.append(str(port))
 		port += 1
 	
 		
@@ -98,13 +102,14 @@ if __name__ == '__main__':
 	processDetailsList = []
 
 	for i in range(num_reducers):
-		processDetailsList.append([str(i+1), inp_task, str(port), str(i+1)])
+		processDetailsList.append(portslist + [inp_task, str(port), str(i+1)])
 		processDetailsList[i] = repr(processDetailsList[i])
 		port += 1
 	
 	print()
-	print()
-	print()
+
+	# execute_reducer(processDetailsList[0])
+
 	with Pool() as pool:
 		result = pool.map_async(execute_reducer, processDetailsList)
 		result.wait()

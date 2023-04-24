@@ -20,6 +20,11 @@ class MapperStub(object):
                 request_serializer=mapper__pb2.ProcessFilesRequest.SerializeToString,
                 response_deserializer=mapper__pb2.ProcessFilesResponse.FromString,
                 )
+        self.ReturnKV = channel.unary_unary(
+                '/mappers.Mapper/ReturnKV',
+                request_serializer=mapper__pb2.ReducerID.SerializeToString,
+                response_deserializer=mapper__pb2.KV.FromString,
+                )
 
 
 class MapperServicer(object):
@@ -32,6 +37,12 @@ class MapperServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ReturnKV(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MapperServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -39,6 +50,11 @@ def add_MapperServicer_to_server(servicer, server):
                     servicer.ProcessFiles,
                     request_deserializer=mapper__pb2.ProcessFilesRequest.FromString,
                     response_serializer=mapper__pb2.ProcessFilesResponse.SerializeToString,
+            ),
+            'ReturnKV': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReturnKV,
+                    request_deserializer=mapper__pb2.ReducerID.FromString,
+                    response_serializer=mapper__pb2.KV.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -65,5 +81,22 @@ class Mapper(object):
         return grpc.experimental.unary_unary(request, target, '/mappers.Mapper/ProcessFiles',
             mapper__pb2.ProcessFilesRequest.SerializeToString,
             mapper__pb2.ProcessFilesResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ReturnKV(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mappers.Mapper/ReturnKV',
+            mapper__pb2.ReducerID.SerializeToString,
+            mapper__pb2.KV.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

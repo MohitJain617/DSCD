@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cmapper.proto\x12\x07mappers\"L\n\x13ProcessFilesRequest\x12\x11\n\tfilenames\x18\x01 \x03(\t\x12\x0c\n\x04task\x18\x02 \x01(\t\x12\x14\n\x0cnum_reducers\x18\x03 \x01(\x05\"(\n\x14ProcessFilesResponse\x12\x10\n\x08response\x18\x01 \x01(\x08\x32W\n\x06Mapper\x12M\n\x0cProcessFiles\x12\x1c.mappers.ProcessFilesRequest\x1a\x1d.mappers.ProcessFilesResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cmapper.proto\x12\x07mappers\"L\n\x13ProcessFilesRequest\x12\x11\n\tfilenames\x18\x01 \x03(\t\x12\x0c\n\x04task\x18\x02 \x01(\t\x12\x14\n\x0cnum_reducers\x18\x03 \x01(\x05\"(\n\x14ProcessFilesResponse\x12\x10\n\x08response\x18\x01 \x01(\x08\"\x17\n\tReducerID\x12\n\n\x02id\x18\x01 \x01(\x05\"\x19\n\x02KV\x12\x13\n\x0b\x64ict_object\x18\x01 \x01(\t2\x86\x01\n\x06Mapper\x12M\n\x0cProcessFiles\x12\x1c.mappers.ProcessFilesRequest\x1a\x1d.mappers.ProcessFilesResponse\"\x00\x12-\n\x08ReturnKV\x12\x12.mappers.ReducerID\x1a\x0b.mappers.KV\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'mapper_pb2', globals())
@@ -24,6 +24,10 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _PROCESSFILESREQUEST._serialized_end=101
   _PROCESSFILESRESPONSE._serialized_start=103
   _PROCESSFILESRESPONSE._serialized_end=143
-  _MAPPER._serialized_start=145
-  _MAPPER._serialized_end=232
+  _REDUCERID._serialized_start=145
+  _REDUCERID._serialized_end=168
+  _KV._serialized_start=170
+  _KV._serialized_end=195
+  _MAPPER._serialized_start=198
+  _MAPPER._serialized_end=332
 # @@protoc_insertion_point(module_scope)

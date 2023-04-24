@@ -2,6 +2,8 @@ from concurrent import futures
 import grpc
 import reducer_pb2
 import reducer_pb2_grpc
+import mapper_pb2
+import mapper_pb2_grpc
 import time
 import os
 import sys
@@ -19,8 +21,15 @@ class Reducer(reducer_pb2_grpc.ReducerServicer):
 
 
 	def ProcessFiles(self, request, context):
-		self.id = request.id
 		print("Reduce request received", self.id)
+		dict_list = []
+		for port in request.ports:
+			with grpc.insecure_channel('localhost:'+port) as channel:
+				stub = mapper_pb2_grpc.MapperStub(channel)
+				response = stub.ReturnKV(mapper_pb2.ReducerID(id=int(self.id)))
+				dict_list.append(response.dict_object)
+		
+		print(dict_list)
 		return reducer_pb2.ProcessFilesResponse(response=True)
 
 
