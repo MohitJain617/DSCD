@@ -18,7 +18,7 @@ class Reducer(reducer_pb2_grpc.ReducerServicer):
 		self.addr = addr
 		self.port = port
 		self.id = curr_id
-		self.dir_name = str(id)
+		self.dir_name = str(self.id)
 
 
 	def ProcessFiles(self, request, context):
@@ -28,13 +28,15 @@ class Reducer(reducer_pb2_grpc.ReducerServicer):
 			with grpc.insecure_channel('localhost:'+port) as channel:
 				stub = mapper_pb2_grpc.MapperStub(channel)
 				response = stub.ReturnKV(mapper_pb2.ReducerID(id=int(self.id)))
-				dict_list.append(response.dict_object)
+				dict_list.append(eval(response.dict_object))
 		
 		print(dict_list)
+		self.word_count_handler(dict_list)
 		return reducer_pb2.ProcessFilesResponse(response=True)
 
 
 	def word_count_handler(self, mapper_dicts: list):
+		print("WCH called", mapper_dicts, self.dir_name)
 		final_word_count = {}
 
 		for map_dict in mapper_dicts:
@@ -51,8 +53,6 @@ class Reducer(reducer_pb2_grpc.ReducerServicer):
 			pretty_out += word + " " + str(count) + "\n"
 		
 		
-		# os.mkdir(os.path.join(REDUCER_DIR, self.dir_name))
-
 		out_path = os.path.join(REDUCER_DIR, self.dir_name + ".txt")
 
 		with open(out_path, "w") as f:
