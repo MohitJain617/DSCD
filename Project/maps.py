@@ -107,6 +107,11 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 		verdict = self.helper(file_names, request.task, request.num_reducers )
 		print(verdict)
 		return mapper_pb2.ProcessFilesResponse(response=verdict)
+	
+	def ReturnKV(self, request, context):
+		curr_id = request.id
+		
+		return mapper_pb2.KV(dict_object=)
 
 
 if __name__ == '__main__':

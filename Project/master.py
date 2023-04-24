@@ -1,4 +1,5 @@
 from multiprocessing import Pool, Manager
+import os
 import time
 import subprocess
 import glob
@@ -56,10 +57,12 @@ if __name__ == '__main__':
 	inp_task = input("Enter task: ")
 
 	# Clear output directory
-	subprocess.call(["rm", "-rf", "Data/Mappers"])
-	subprocess.call(["mkdir", "Data/Mappers"])
-	subprocess.call(["rm", "-rf", "Data/Reducers"])
-	subprocess.call(["mkdir", "Data/Reducers"])
+	datamdir = os.path.join(os.getcwd(), "Data", "Mappers")
+	datardir = os.path.join(os.getcwd(), "Data", "Reducers")
+	subprocess.call(["rm", "-rf", datamdir])
+	subprocess.call(["mkdir", datamdir])
+	subprocess.call(["rm", "-rf", datardir])
+	subprocess.call(["mkdir", datardir])
 
 	# read all file names:
 	file_names = glob.glob("Data/Inputs/*")
