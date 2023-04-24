@@ -5,6 +5,7 @@ import mapper_pb2_grpc
 import time
 import os
 import sys
+import pickle
 
 
 INPUT_DIR = "Data/Inputs"
@@ -43,13 +44,26 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 
 		print("Word count: ", word_count, self.dir_name)
 		os.mkdir(os.path.join(MAPPER_DIR, self.dir_name))
+		
+		reducers_dicts = [{} for i in range(N_Reducers)]
 
 		for word in word_count : 
 			val = self.ASCII_SUM(word)
-			output = word + ' ' + str(word_count[word]) + '\n'
-			out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.dir_name), str((val % N_Reducers) + 1) + '.txt')
-			with open(out_file_path, 'a+') as file:
-				file.write(output)
+			reducers_dicts[val%N_Reducers][word] = str(word_count[word])
+			# output = word + ' ' + str(word_count[word]) + '\n'
+			# out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.dir_name), str((val % N_Reducers) + 1) + '.txt')
+			# with open(out_file_path, 'a+') as file:
+			# 	file.write(output)
+
+		for i in range(N_Reducers):
+			out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.dir_name), str(i+1) + '.txt')	
+			
+			str_dict = str(reducers_dicts[i]) 
+			with open(out_file_path, "wb") as f:
+				f.write(str_dict)
+
+			# with open(out_file_path, "wb") as f:
+			# 	pickle.dump(reducers_dicts[i], out_file_path)
 
 		return True
 
@@ -73,12 +87,28 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 
 		os.mkdir(os.path.join(MAPPER_DIR, self.dir_name))
 
+		reducers_dict = [{} for i in range(N_Reducers)]
+
+
 		for word in inverted_index : 
 			val = self.ASCII_SUM(word)
-			output = word + ' ' + str(", ".join(str(x) for x in inverted_index[word])) + '\n'
-			out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.dir_name), str((val % N_Reducers) + 1) + '.txt')
-			with open(out_file_path, 'a+') as file:
-				file.write(output)
+			reducers_dict[val%N_Reducers][word] = inverted_index[word]
+
+			# output = word + ' ' + str(", ".join(str(x) for x in inverted_index[word])) + '\n'
+			# out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.dir_name), str((val % N_Reducers) + 1) + '.txt')
+			# with open(out_file_path, 'a+') as file:
+			# 	file.write(output)
+
+		for i in range(N_Reducers):
+			out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.dir_name), str(i+1) + '.txt')	
+			
+			str_dict = str(reducers_dict[i]) 
+			with open(out_file_path, "wb") as f:
+				f.write(str_dict)
+
+			# with open(out_file_path, "wb") as f:
+			# 	pickle.dump(reducers_dicts[i], out_file_path)
+		
 
 		return True
 
