@@ -8,8 +8,8 @@ service Mapper {
 }
 message ProcessFilesRequest {
 	repeated string filenames = 1;
-  string task = 2;
-  int32 num_reducers = 3;
+  	string task = 2;
+	int32 num_reducers = 3;
 }
 message ProcessFilesResponse {
 	bool response = 1;

@@ -67,8 +67,19 @@ if __name__ == '__main__':
 	subprocess.call(["mkdir", datardir])
 
 	# read all file names:
-	file_names = glob.glob("Data/Inputs/*")
+	file_names = glob.glob("Data/Inputs/" + inp_task.lower() + "/*")
 	file_names.sort()
+
+	# read config if exists
+	for i in range(len(file_names)):
+		if file_names[i].split("/")[-1] == "config.txt":
+			with open(file_names[i], "r") as f:
+				for line in f: 
+					words = line.split("=")
+					if words[0].strip().lower() == "mappers":
+						num_mappers = int(words[1].strip())
+					elif words[0].strip().lower() == "reducers":
+						num_reducers = int(words[1].strip()) 
 
 	processDetailsList = []
 
@@ -78,7 +89,9 @@ if __name__ == '__main__':
 
 	# Distribute files among mappers
 	for i in range(len(file_names)):
-		processDetailsList[i % num_mappers].append(file_names[i][12:])
+		if file_names[i].split("/")[-1] == "config.txt":
+			continue 
+		processDetailsList[i % num_mappers].append(file_names[i].split("/")[-1])
 	
 	# Assign ports and names to mappers
 	port = 50052

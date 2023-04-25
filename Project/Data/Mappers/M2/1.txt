@@ -1,1 +1,1 @@
-{'yellow': '1', 'vibhu': '1', 'aflah': '1', '': '3', 'hahah': '1', '123': '1'}
+{'greatness': '3', 'some': '2', 'are': '1', 'have': '2', 'thrust': '2', 'upon': '2', 'them': '2', '2': '4', 'is': '1', '6': '1', 'worship': '1', 'faith': '1', '4': '1', 'this': '1', 'apple': '1'}

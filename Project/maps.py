@@ -17,6 +17,7 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 		self.addr = addr
 		self.port = port
 		self.dir_name = name
+		self.curr_task = ""
 
 	def ASCII_SUM(self, word) :
 		val = 0
@@ -29,7 +30,7 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 		word_count = {}
 
 		for file in input_files : 
-			input_file_path = os.path.join(INPUT_DIR, file)
+			input_file_path = os.path.join(INPUT_DIR, self.curr_task, file)
 			with open(input_file_path, 'r') as file :
 				for line in file :
 					if line[-1] == '\n' :
@@ -72,7 +73,7 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 		inverted_index = {}
 		for file in input_files : 
 			count = int(file[-5])
-			input_file_path = os.path.join(INPUT_DIR, file)
+			input_file_path = os.path.join(INPUT_DIR, self.curr_task, file)
 			with open(input_file_path, 'r') as file :
 				for line in file :
 					if line[-1] == '\n' :
@@ -80,10 +81,10 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 					words = line.split(' ')
 					for word in words :
 						word = word.lower()
-						if(word in inverted_index and inverted_index[word][-1] != count):
-							inverted_index[word].append(count)
+						if(word in inverted_index and inverted_index[word][-1] != file):
+							inverted_index[word].append(file)
 						elif(word not in inverted_index) :
-							inverted_index[word] = [count]
+							inverted_index[word] = [file]
 
 		os.mkdir(os.path.join(MAPPER_DIR, self.dir_name))
 
@@ -116,7 +117,7 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 		return True
 
 	def helper(self, input_files, task, n_reducers) :
-		
+		self.curr_task = task.lower()
 		if(task == 'WORD COUNT') :
 			print("Helper called with ", input_files)
 			return self.word_count_handler(input_files, n_reducers)

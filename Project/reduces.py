@@ -21,7 +21,7 @@ class Reducer(reducer_pb2_grpc.ReducerServicer):
 		self.dir_name = str(self.id)
 
 
-	def ProcessFiles(self, request, context):
+	def ProcessFiles(self, request: reducer_pb2.ProcessFilesRequest, context):
 		print("Reduce request received", self.id)
 		dict_list = []
 		for port in request.ports:
@@ -31,12 +31,17 @@ class Reducer(reducer_pb2_grpc.ReducerServicer):
 				dict_list.append(eval(response.dict_object))
 		
 		print(dict_list)
-		self.word_count_handler(dict_list)
+
+		if request.task == "WORD COUNT":
+			self.word_count_handler(dict_list)
+		elif request.task == "INVERTED INDEX":
+			self.inverted_index_handler(dict_list)
+		# elif request.task == "NATURAL JOIN":
+			# self.
 		return reducer_pb2.ProcessFilesResponse(response=True)
 
 
 	def word_count_handler(self, mapper_dicts: list):
-		print("WCH called", mapper_dicts, self.dir_name)
 		final_word_count = {}
 
 		for map_dict in mapper_dicts:
@@ -52,6 +57,30 @@ class Reducer(reducer_pb2_grpc.ReducerServicer):
 		for word, count in final_word_count.items():
 			pretty_out += word + " " + str(count) + "\n"
 		
+		
+		out_path = os.path.join(REDUCER_DIR, self.dir_name + ".txt")
+
+		with open(out_path, "w") as f:
+			f.write(pretty_out)
+
+		return True
+	
+	def inverted_index_handler(self, mapper_dicts: list):
+		final_inverted_index = {} 
+
+		for map_dict in mapper_dicts:
+			for word, file in map_dict.items():
+				if word not in final_inverted_index:
+					final_inverted_index[word] = [file]
+				elif file not in final_inverted_index[word]: 
+					final_inverted_index[word].append(file)
+		
+
+		pretty_out = ""
+
+		for word, files in final_inverted_index.items():
+			pretty_out += word + " : " + str(files) + "\n"
+				
 		
 		out_path = os.path.join(REDUCER_DIR, self.dir_name + ".txt")
 
