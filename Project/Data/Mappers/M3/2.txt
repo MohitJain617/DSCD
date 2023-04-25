@@ -1,1 +1,0 @@
-{'work': ['Input3.txt'], 'not': ['Input3.txt']}

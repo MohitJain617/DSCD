@@ -1,1 +1,1 @@
-{'this': ['Input1.txt'], 'is': ['Input1.txt'], 'apple': ['Input1.txt']}
+{'Tom': [('table2', ('role', 'Manager'))]}

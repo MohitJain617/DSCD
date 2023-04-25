@@ -1,1 +1,0 @@
-{'is': ['Input3.txt'], 'worship': ['Input3.txt'], 'faith': ['Input3.txt']}

@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
 	# Distribute files among mappers
 	for i in range(len(file_names)):
-		if file_names[i].split("/")[-1] == "config.txt" or file_names[i].split("/")[-1].find("Output") != -1:
+		if file_names[i].split("/")[-1] == "config.txt" or file_names[i].split("/")[-1].lower().find("output") != -1:
 			continue 
 		processDetailsList[i % num_mappers].append(file_names[i].split("/")[-1])
 	

@@ -1,1 +1,1 @@
-{'an': ['Input1.txt'], 'red': ['Input1.txt'], 'in': ['Input1.txt'], 'color': ['Input1.txt']}
+{'John': [('table2', ('role', 'CEO'))], 'Kevin': [('table2', ('role', 'Intern')), ('table2', ('role', 'Chairman'))], 'Nick': [('table2', ('role', 'Associate'))]}

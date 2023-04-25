@@ -10,6 +10,7 @@ import pickle
 
 INPUT_DIR = "Data/Inputs"
 MAPPER_DIR = "Data/Mappers"
+COMMON_KEY = "name"
 
 # create gRPC server
 class Mapper(mapper_pb2_grpc.MapperServicer):
@@ -51,10 +52,6 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 		for word in word_count : 
 			val = self.ASCII_SUM(word)
 			reducers_dicts[val%N_Reducers][word] = str(word_count[word])
-			# output = word + ' ' + str(word_count[word]) + '\n'
-			# out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.dir_name), str((val % N_Reducers) + 1) + '.txt')
-			# with open(out_file_path, 'a+') as file:
-			# 	file.write(output)
 
 		for i in range(N_Reducers):
 			out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.dir_name), str(i+1) + '.txt')	
@@ -113,8 +110,59 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 		
 
 		return True
-
+	# assumes each table only has 2 columns and one of them is common
 	def natural_join_handler(self, input_files, N_Reducers) :
+		# common_key: (table, (key, val))
+		natural_join_dict = {}
+
+		for file_name in input_files:
+			table_name = file_name.split("_")[-1].split(".")[0]
+			input_file_path = os.path.join(INPUT_DIR, self.curr_task, file_name)
+			common_key_id = 0
+			unique_key_id = 1
+			with open(input_file_path, "r") as f:
+				lines = f.readlines()
+				for i in range(len(lines)):
+					line = lines[i]
+					if len(line) > 0 and line[0] == "\n":
+						lines[i] = line[:-1]
+			
+				if len(lines) < 2:
+					continue
+
+				if lines[0].split(",")[0].strip().lower() == COMMON_KEY.lower():
+					common_key_id = 0
+					unique_key_id = 1
+				else: 
+					common_key_id = 1
+					unique_key_id = 0
+
+				unique_key_label = lines[0].split(",")[unique_key_id].strip().lower()
+				for i in range(1, len(lines)):
+					common_key_val = lines[i].split(",")[common_key_id].strip()
+					unique_key_val = lines[i].split(",")[unique_key_id].strip()
+					if common_key_val in natural_join_dict:
+						natural_join_dict[common_key_val].append((table_name, (unique_key_label, unique_key_val)))
+					else:
+						natural_join_dict[common_key_val] = [(table_name, (unique_key_label, unique_key_val))]
+			
+		reducers_dict = [{} for i in range(N_Reducers)]
+		for common_val, uni_list in natural_join_dict.items():
+			val = self.ASCII_SUM(common_val)
+			reducers_dict[val%N_Reducers][common_val] = uni_list
+		
+		# print("RED:", len(reducers_dict[0]), len(reducers_dict[1]))
+
+		os.mkdir(os.path.join(MAPPER_DIR, self.dir_name))
+
+		for i in range(N_Reducers):
+			
+			out_file_path = os.path.join(os.path.join(MAPPER_DIR, self.dir_name), str(i+1) + '.txt')	
+			
+			str_dict = str(reducers_dict[i]) 
+			with open(out_file_path, "w") as f:
+				f.write(str_dict)	
+
 		return True
 
 	def helper(self, input_files, task, n_reducers) :
@@ -161,6 +209,6 @@ if __name__ == '__main__':
 	server.add_insecure_port('[::]:'+port)
 	server.start()
 	print(name, "Mapper started")
-	time.sleep(300) # run for 5 mins
+	time.sleep(30) # run for 5 mins
 	print("Mapper done")
 	server.stop(0)

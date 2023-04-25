@@ -1,12 +1,2 @@
-this : [['Input1.txt']]
-is : [['Input1.txt'], ['Input3.txt']]
-apple : [['Input1.txt']]
-greatness : [['Input2.txt']]
-some : [['Input2.txt']]
-are : [['Input2.txt']]
-have : [['Input2.txt']]
-thrust : [['Input2.txt']]
-upon : [['Input2.txt']]
-them : [['Input2.txt']]
-worship : [['Input3.txt']]
-faith : [['Input3.txt']]
+name = Tom ('role', 'Manager') ('age', '17')
+name = Tom ('role', 'Manager') ('age', '34')
