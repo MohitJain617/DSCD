@@ -1,16 +1,14 @@
-an 1
-red 2
-in 2
-color 2
-be 2
-1 16
-not 3
-afraid 2
-of 2
-3 1
-born 2
-great 2
-achieve 2
-and 2
-others 2
-work 3
+an : [['Input1.txt']]
+red : [['Input1.txt']]
+in : [['Input1.txt']]
+color : [['Input1.txt']]
+be : [['Input2.txt']]
+not : [['Input2.txt'], ['Input3.txt']]
+afraid : [['Input2.txt']]
+of : [['Input2.txt']]
+born : [['Input2.txt']]
+great : [['Input2.txt']]
+achieve : [['Input2.txt']]
+and : [['Input2.txt']]
+others : [['Input2.txt']]
+work : [['Input3.txt']]

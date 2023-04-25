@@ -1,1 +1,1 @@
-{'be': '1', 'not': '1', 'afraid': '1', 'of': '1', 'born': '1', 'great': '1', 'achieve': '1', 'and': '2', 'others': '2', '1': '9', 'work': '1', 'red': '1', 'in': '1', 'color': '1'}
+{'be': ['Input2.txt'], 'not': ['Input2.txt'], 'afraid': ['Input2.txt'], 'of': ['Input2.txt'], 'born': ['Input2.txt'], 'great': ['Input2.txt'], 'achieve': ['Input2.txt'], 'and': ['Input2.txt'], 'others': ['Input2.txt']}

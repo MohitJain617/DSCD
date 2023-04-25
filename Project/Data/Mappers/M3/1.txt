@@ -1,1 +1,1 @@
-{'is': '4', 'worship': '2', 'faith': '4'}
+{'is': ['Input3.txt'], 'worship': ['Input3.txt'], 'faith': ['Input3.txt']}

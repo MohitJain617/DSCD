@@ -1,1 +1,1 @@
-{'greatness': '3', 'some': '2', 'are': '1', 'have': '2', 'thrust': '2', 'upon': '2', 'them': '2', '2': '4', 'is': '1', '6': '1', 'worship': '1', 'faith': '1', '4': '1', 'this': '1', 'apple': '1'}
+{'greatness': ['Input2.txt'], 'some': ['Input2.txt'], 'are': ['Input2.txt'], 'have': ['Input2.txt'], 'thrust': ['Input2.txt'], 'upon': ['Input2.txt'], 'them': ['Input2.txt']}

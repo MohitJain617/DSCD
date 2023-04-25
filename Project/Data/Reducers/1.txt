@@ -1,15 +1,12 @@
-this 2
-is 7
-apple 3
-2 6
-greatness 4
-some 3
-are 2
-have 2
-thrust 2
-upon 2
-them 2
-6 1
-worship 3
-faith 5
-4 1
+this : [['Input1.txt']]
+is : [['Input1.txt'], ['Input3.txt']]
+apple : [['Input1.txt']]
+greatness : [['Input2.txt']]
+some : [['Input2.txt']]
+are : [['Input2.txt']]
+have : [['Input2.txt']]
+thrust : [['Input2.txt']]
+upon : [['Input2.txt']]
+them : [['Input2.txt']]
+worship : [['Input3.txt']]
+faith : [['Input3.txt']]

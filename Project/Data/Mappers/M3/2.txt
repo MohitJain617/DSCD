@@ -1,1 +1,1 @@
-{'work': '2', 'not': '1'}
+{'work': ['Input3.txt'], 'not': ['Input3.txt']}

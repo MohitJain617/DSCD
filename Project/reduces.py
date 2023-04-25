@@ -31,7 +31,7 @@ class Reducer(reducer_pb2_grpc.ReducerServicer):
 				dict_list.append(eval(response.dict_object))
 		
 		print(dict_list)
-
+		print("HAAAAA" , request.task)
 		if request.task == "WORD COUNT":
 			self.word_count_handler(dict_list)
 		elif request.task == "INVERTED INDEX":
@@ -80,7 +80,7 @@ class Reducer(reducer_pb2_grpc.ReducerServicer):
 
 		for word, files in final_inverted_index.items():
 			pretty_out += word + " : " + str(files) + "\n"
-				
+
 		
 		out_path = os.path.join(REDUCER_DIR, self.dir_name + ".txt")
 

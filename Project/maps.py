@@ -71,9 +71,10 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 	def inverted_index_handler(self, input_files, N_Reducers = 3) :
 
 		inverted_index = {}
-		for file in input_files : 
-			count = int(file[-5])
-			input_file_path = os.path.join(INPUT_DIR, self.curr_task, file)
+		for file_name in input_files : 
+			count = int(file_name[-5])
+			input_file_path = os.path.join(INPUT_DIR, self.curr_task, file_name)
+			print("AAA", input_file_path)
 			with open(input_file_path, 'r') as file :
 				for line in file :
 					if line[-1] == '\n' :
@@ -81,10 +82,10 @@ class Mapper(mapper_pb2_grpc.MapperServicer):
 					words = line.split(' ')
 					for word in words :
 						word = word.lower()
-						if(word in inverted_index and inverted_index[word][-1] != file):
-							inverted_index[word].append(file)
+						if(word in inverted_index and inverted_index[word][-1] != file_name):
+							inverted_index[word].append(str(file_name))
 						elif(word not in inverted_index) :
-							inverted_index[word] = [file]
+							inverted_index[word] = [str(file_name)]
 
 		os.mkdir(os.path.join(MAPPER_DIR, self.dir_name))
 
