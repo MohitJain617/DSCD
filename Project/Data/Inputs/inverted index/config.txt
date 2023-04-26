@@ -1,2 +1,2 @@
-Mappers = 3
-Reducers = 2
+Mappers = 2
+Reducers = 6

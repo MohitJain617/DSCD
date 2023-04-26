@@ -37,7 +37,6 @@ class Reducer(reducer_pb2_grpc.ReducerServicer):
 		elif request.task == "INVERTED INDEX":
 			self.inverted_index_handler(dict_list)
 		elif request.task == "NATURAL JOIN":
-			print("HAAAAA" , request.task)
 			self.natural_join_handler(dict_list)
 		return reducer_pb2.ProcessFilesResponse(response=True)
 
@@ -122,7 +121,8 @@ class Reducer(reducer_pb2_grpc.ReducerServicer):
 						if common_val in tables[j]:
 							unique_val_list_2 = tables[j][common_val]
 							for unique_val_2 in unique_val_list_2:
-								row = COMMON_KEY + " = " + common_val + " " + str(unique_val_1) + " " + str(unique_val_2)
+								# row = COMMON_KEY + " = " + common_val + ", " + str(unique_val_1) + " " + str(unique_val_2)
+								row = "{} = {}, {} = {}, {} = {}".format(COMMON_KEY, common_val, unique_val_1[0], unique_val_1[1], unique_val_2[0], unique_val_2[1])
 								final_joined_table.append(row)
 								pretty_out += row + "\n"
 

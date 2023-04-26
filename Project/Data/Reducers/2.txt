@@ -1,5 +1,5 @@
-name = John ('role', 'CEO') ('age', '21')
-name = Kevin ('role', 'Intern') ('age', '100')
-name = Kevin ('role', 'Intern') ('age', '200')
-name = Kevin ('role', 'Chairman') ('age', '100')
-name = Kevin ('role', 'Chairman') ('age', '200')
+name = John, role = CEO, age = 21
+name = Kevin, role = Intern, age = 100
+name = Kevin, role = Intern, age = 200
+name = Kevin, role = Chairman, age = 100
+name = Kevin, role = Chairman, age = 200

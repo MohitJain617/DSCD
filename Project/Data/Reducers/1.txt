@@ -1,2 +1,2 @@
-name = Tom ('role', 'Manager') ('age', '17')
-name = Tom ('role', 'Manager') ('age', '34')
+name = Tom, role = Manager, age = 17
+name = Tom, role = Manager, age = 34
